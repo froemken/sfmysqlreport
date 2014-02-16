@@ -1,0 +1,50 @@
+<p class="help">Hier sammel ich gefundene Berechnungen und Hinweise, um den in TYPO3 hinterlegten MySQL-Server zu testen.</p>
+<p class="help">Evtl. hilft es Euch noch ein bisschen mehr an Performance aus dem Server zu holen.</p>
+
+<f:for each="{reports}" as="report">
+
+	<h2>{report.title}</h2>
+
+	<h4>Important Variables</h4>
+
+	<f:for each="{report.variables}" as="variable" key="key">
+		<div>
+			<div class="typo3-message message-notice">
+				<div class="header-container">
+					<div class="message-header message-left">{key}</div>
+					<div class="message-header message-right">{variable}</div>
+				</div>
+				<div class="message-body"></div>
+			</div>
+		</div>
+	</f:for>
+
+	<h4>Important Status</h4>
+
+	<f:for each="{report.status}" as="status" key="key">
+		<div>
+			<div class="typo3-message message-notice">
+				<div class="header-container">
+					<div class="message-header message-left">{key}</div>
+					<div class="message-header message-right">{status}</div>
+				</div>
+				<div class="message-body"></div>
+			</div>
+		</div>
+	</f:for>
+
+	<h4>Calculations</h4>
+
+	<f:for each="{report.calculations}" as="calculation">
+		<div>
+			<div class="typo3-message {f:if(condition: calculation.inRange, then: 'message-ok', else: 'message-error')}">
+				<div class="header-container">
+					<div class="message-header message-left">{calculation.title}</div>
+					<div class="message-header message-right">{calculation.result}</div>
+				</div>
+				<div class="message-body">{calculation.description}</div>
+			</div>
+		</div>
+	</f:for>
+
+</f:for>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for sfmysqlreport</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="report_title">MySQL Check</label>
+			<label index="report_description">With this report you can test/check your MySQL-Server</label>
+
+			<label index="freeTableDefinitions.title">Free entries in Definitioncache</label>
+			<label index="freeTableDefinitions.description">It would be good to have 10% free in Definitioncache</label>
+			<label index="freeOpenTables.title">Free entries in Table open cache</label>
+			<label index="freeOpenTables.description">It would be good to have 10% free in Table open cache</label>
+			<label index="openedDefinitionsEachSecond.title">Opened Definitions each second</label>
+			<label index="openedDefinitionsEachSecond.description">0-3 should be OK. If value is above 10 you should increase table_definition_cache</label>
+			<label index="openedTablesEachSecond.title">Opened tableinformations each second</label>
+			<label index="openedTablesEachSecond.description">0-3 should be OK. If value is above 10 you should increase table_definition_cache</label>
+
+			<label index="createdThreadsEachSecond.title">Created Threads each second</label>
+			<label index="createdThreadsEachSecond.description">0-3 should be OK. If value is above 10 you should increase thread_cache_size</label>
+			<label index="sumOfAllThreadsInBytes.title">Sum of all created threads in byte</label>
+			<label index="sumOfAllThreadsInBytes.description">Each creation of a thread costs 256KB. This value shows the total costs of all created threads</label>
+
+			<label index="cacheHitRatioBook.title">Cache Hit Ratio</label>
+			<label index="cacheHitRatioBook.description">This calculation I have from this book "High Performance MySQL" given in percent. As higher as better.</label>
+			<label index="cacheHitRatioMySql.title">Cache Hit Ratio</label>
+			<label index="cacheHitRatioMySql.description">This calculation I have from MySQL-Website. The value should be near 0.01. As smaller as better.</label>
+			<label index="cacheHitRatio.title">Cache Hit Ratio</label>
+			<label index="cacheHitRatio.description">Personal calculation. Schould be higher than 100.</label>
+			<label index="cacheMisses.title">Cache Misses</label>
+			<label index="cacheMisses.description">How ofter MySQL have to access the HDD instead of RAM. As lower as better. 5 should be OK, but 80 is really high.</label>
+			<label index="usedBuffer.title">Used KeyBuffer</label>
+			<label index="usedBuffer.description">Used KeyBuffer in percent</label>
+			<label index="myIsamIndexSize.title">Indexsize</label>
+			<label index="myIsamIndexSize.description">Sum of all MyISAM-Indexes. He should be smaller than key_buffer_size. If not, key_buffer_size should not be higher than 25-33% of RAM.</label>
+
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="report_title">MySQL Überprüfung</label>
+			<label index="report_description">Dieser Bericht gibt Dir einen Überblick über Deinen MySQL-Server und einige Tipps die Geschwindigkeit zu verbessern</label>
+
+			<label index="freeTableDefinitions.title">Freie Einträge im Definitionscache</label>
+			<label index="freeTableDefinitions.description">Es sollten immer knapp 10% im Definitionscache frei sein</label>
+			<label index="freeOpenTables.title">Freie Einträge im Table Open Cache</label>
+			<label index="freeOpenTables.description">Es sollten immer knapp 10% im Table Open Cache frei sein</label>
+			<label index="openedDefinitionsEachSecond.title">Geöffnete Definitionen pro Sekunde</label>
+			<label index="openedDefinitionsEachSecond.description">0-3 sollte OK sein. Alles über 10 hat Handlungsbedarf</label>
+			<label index="openedTablesEachSecond.title">Geöffnete Tabelleninformationen pro Sekunde</label>
+			<label index="openedTablesEachSecond.description">0-3 sollte OK sein. Alles über 10 hat Handlungsbedarf</label>
+
+			<label index="createdThreadsEachSecond.title">Erstellte Threads pro Sekunde</label>
+			<label index="createdThreadsEachSecond.description">0-3 sollte OK sein. Sollte der Wert allerdings über 10 gehen, dann sollten Sie den Wert für thread_cache_size entsprechend anpassen</label>
+			<label index="sumOfAllThreadsInBytes.title">Summe aller erstellten Threads in Byte</label>
+			<label index="sumOfAllThreadsInBytes.description">Jede Threaderstellung kostet 256KB und wird bei Nichtverwendung wieder freigegeben. Dieser Wert summiert alle erstellten Threads in Byte.</label>
+
+			<label index="cacheHitRatioBook.title">Cache Hit Ratio</label>
+			<label index="cacheHitRatioBook.description">Diese Berechnung habe ich aus dem Buch "High Performance MySQL". Angabe in Prozent. Je höher desto besser. Jedoch liegt zwischen 99% und 99,9% eine Leistungssteigerung von 10% vor.</label>
+			<label index="cacheHitRatioMySql.title">Cache Hit Ratio</label>
+			<label index="cacheHitRatioMySql.description">Diese Berechnung habe ich von der MySQL-Webseite. Der Wert sollte um die 0.01 liegen. Je kleiner je besser.</label>
+			<label index="cacheHitRatio.title">Cache Hit Ratio</label>
+			<label index="cacheHitRatio.description">Persönliche Berechnung. Wenn wir davon ausgehen, dass das Verhältnis zwischen RAM und HDD bei einer Geschwindigkeit von 100 zu 1 liegt, dann sollte dieser Wert hier über 100 liegen.</label>
+			<label index="cacheMisses.title">Cache Misses</label>
+			<label index="cacheMisses.description">Wie oft musste MySQL pro Sekunde auf die Festplatte zugreifen, um einen Indexeintrag auszulesen. Je höher desto schlechter. 5 mag OK sein. 80 ist jedoch schon heftig viel</label>
+			<label index="usedBuffer.title">Verwendeter Buffer</label>
+			<label index="usedBuffer.description">Zu wie viel Prozent wird der KeyBuffer derzeit verwendet?</label>
+			<label index="myIsamIndexSize.title">Indexgröße</label>
+			<label index="myIsamIndexSize.description">Summe aller MyISAM-Indexes. Er sollte kleiner sein als die key_buffer_size. Falls das nicht geht, dann sollte die key_buffer_size 25-33% des RAMS nicht übersteigen.</label>
+
+		</languageKey>
+	</data>
+</T3locallang>
