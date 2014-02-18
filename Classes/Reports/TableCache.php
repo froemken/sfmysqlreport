@@ -40,6 +40,7 @@ class TableCache extends \StefanFroemken\Sfmysqlreport\Reports\AbstractReport {
 		/** @var \StefanFroemken\Sfmysqlreport\Domain\Model\Report $report */
 		$report = $this->objectManager->get('StefanFroemken\\Sfmysqlreport\\Domain\\Model\\Report');
 		$report->setTitle($this->title);
+		$report->setDescription('tableCache');
 		$this->addImportantVariables($report);
 		$this->addImportantStatus($report);
 

@@ -23,6 +23,7 @@ namespace StefanFroemken\Sfmysqlreport\Domain\Model;
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * This model saves the mysql status
@@ -35,6 +36,13 @@ class Report {
 	 * @var string
 	 */
 	protected $title = '';
+
+	/**
+	 * description
+	 *
+	 * @var string
+	 */
+	protected $description = '';
 
 	/**
 	 * status
@@ -80,6 +88,29 @@ class Report {
 	 */
 	public function setTitle($title) {
 		$this->title = $title;
+	}
+
+	/**
+	 * Getter for description
+	 *
+	 * @return string
+	 */
+	public function getDescription() {
+		$description = LocalizationUtility::translate($this->description, 'Sfmysqlreport');
+		if (empty($description)) {
+			$description = $this->description;
+		}
+		return $description;
+	}
+
+	/**
+	 * Setter for description
+	 *
+	 * @param string $description
+	 * @return void
+	 */
+	public function setDescription($description) {
+		$this->description = $description;
 	}
 
 	/**
