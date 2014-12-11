@@ -43,11 +43,13 @@ class QueryCacheViewHelper extends AbstractViewHelper {
 		$this->templateVariableContainer->add('hitRatio', $this->getHitRatio($status));
 		$this->templateVariableContainer->add('insertRatio', $this->getInsertRatio($status));
 		$this->templateVariableContainer->add('pruneRatio', $this->getPruneRatio($status));
+		$this->templateVariableContainer->add('fragmentationRatio', $this->getFragmentationRatio($status));
 		$this->templateVariableContainer->add('avgQuerySize', $this->getAvgQuerySize($status, $variables));
 		$content = $this->renderChildren();
 		$this->templateVariableContainer->remove('hitRatio');
 		$this->templateVariableContainer->remove('insertRatio');
 		$this->templateVariableContainer->remove('pruneRatio');
+		$this->templateVariableContainer->remove('fragmentationRatio');
 		$this->templateVariableContainer->remove('avgQuerySize');
 		return $content;
 	}
@@ -120,6 +122,7 @@ class QueryCacheViewHelper extends AbstractViewHelper {
 	protected function getAvgQuerySize(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status, \StefanFroemken\Sfmysqlreport\Domain\Model\Variables $variables) {
 		return round($this->getUsedQueryCacheSize($status, $variables) / $status->getQcacheQueriesInCache(), 2);
 	}
+
 	/**
 	 * get used query size in bytes
 	 *
@@ -130,6 +133,25 @@ class QueryCacheViewHelper extends AbstractViewHelper {
 	protected function getUsedQueryCacheSize(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status, \StefanFroemken\Sfmysqlreport\Domain\Model\Variables $variables) {
 		$queryCacheSize = $variables->getQueryCacheSize() - (40 * 1024); // ~40KB are reserved by operating system
 		return $queryCacheSize - $status->getQcacheFreeMemory();
+	}
+
+	/**
+	 * get fragmentation ratio
+	 *
+	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
+	 * @return float
+	 */
+	protected function getFragmentationRatio(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status) {
+		$fragmentation = ($status->getQcacheFreeBlocks() / ($status->getQcacheTotalBlocks() / 2)) * 100; // total blocks / 2 = maximum fragmentation
+		if ($fragmentation <= 10) {
+			$result['status'] = 'success';
+		} elseif ($fragmentation <= 25) {
+			$result['status'] = 'warning';
+		} else {
+			$result['status'] = 'danger';
+		}
+		$result['value'] = round($fragmentation, 2);
+		return $result;
 	}
 
 }

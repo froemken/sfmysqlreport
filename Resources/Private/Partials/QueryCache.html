@@ -19,14 +19,27 @@
 		</div>
 		<div class="panel-body">{pruneRatio.value}%</div>
 	</div>
+	<div class="panel panel-{fragmentationRatio.status}">
+		<div class="panel-heading">
+			<h3 class="panel-title">Fragmentation Ratio</h3>
+		</div>
+		<div class="panel-body">
+			<p>{fragmentationRatio.value}%</p>
+			<p>You can defragment query cache with FLUSH QUERY CACHE if you are allowed to (RELOAD privileges).
+				While processing FLUSH, query cache is not available and all queries will be blocked for that duration.
+				But this command is very fast if your query_cache_size is small.
+			</p>
+			<p>If you want to clear query cache you should use: RESET QUERY CACHE</p>
+		</div>
+	</div>
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h3 class="panel-title">Average Query size</h3>
 		</div>
 		<div class="panel-body">
-			<p>Average Query Size in Query Cache: {avgQuerySize}</p>
-			<p>Query Cache Limit (query_cache_limit): {variables.queryCacheLimit}</p>
-			<p>Initial Blocksize for new inserted Queries(query_cache_min_res_unit): {variables.queryCacheMinResUnit}</p>
+			<p>Average Query Size in Query Cache: {avgQuerySize} Byte</p>
+			<p>Query Cache Limit (query_cache_limit): {variables.queryCacheLimit} Byte</p>
+			<p>Initial Blocksize for new inserted Queries(query_cache_min_res_unit): {variables.queryCacheMinResUnit} Byte</p>
 		</div>
 	</div>
 </sf:queryCache>
