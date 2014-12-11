@@ -204,6 +204,13 @@ class Status {
 	 */
 	protected $uptime = 0;
 
+	/**
+	 * Uptime_since_flush_status
+	 *
+	 * @var int
+	 */
+	protected $uptimeSinceFlushStatus = 0;
+
 
 
 
@@ -681,6 +688,25 @@ class Status {
 	 */
 	public function setUptime($uptime) {
 		$this->uptime = $uptime;
+	}
+
+	/**
+	 * Returns the uptimeSinceFlushStatus
+	 *
+	 * @return int $uptimeSinceFlushStatus
+	 */
+	public function getUptimeSinceFlushStatus() {
+		return $this->uptimeSinceFlushStatus;
+	}
+
+	/**
+	 * Sets the uptimeSinceFlushStatus
+	 *
+	 * @param int $uptimeSinceFlushStatus
+	 * @return void
+	 */
+	public function setUptimeSinceFlushStatus($uptimeSinceFlushStatus) {
+		$this->uptimeSinceFlushStatus = $uptimeSinceFlushStatus;
 	}
 
 }

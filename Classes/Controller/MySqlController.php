@@ -72,4 +72,14 @@ class MySqlController extends ActionController {
 		$this->view->assign('variables', $this->variablesRepository->findAll());
 	}
 
+	/**
+	 * query cache action
+	 *
+	 * @return void
+	 */
+	public function queryCacheAction() {
+		$this->view->assign('status', $this->statusRepository->findAll());
+		$this->view->assign('variables', $this->variablesRepository->findAll());
+	}
+
 }

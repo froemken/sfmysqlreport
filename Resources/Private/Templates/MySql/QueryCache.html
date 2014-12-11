@@ -1,6 +1,7 @@
 <f:layout name="Default" />
 
 <f:section name="content">
+	<f:render partial="Uptime" arguments="{status: status}" />
 	<f:if condition="{variables.queryCacheType}">
 		<f:then>
 			<f:if condition="{variables.queryCacheSize}">

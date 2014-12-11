@@ -10,7 +10,7 @@ if (TYPO3_MODE == 'BE') {
 		'mysql',	// Submodule key
 		'',	// Position
 		array(
-			'MySql' => 'report',
+			'MySql' => 'queryCache, innoDbBuffer, report',
 		),
 		array(
 			'access' => 'user,group',
