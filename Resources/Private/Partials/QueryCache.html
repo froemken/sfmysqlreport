@@ -1,7 +1,32 @@
 {namespace sf=StefanFroemken\Sfmysqlreport\ViewHelpers}
 
 <sf:queryCache status="{status}" variables="{variables}">
-	<p>HitRatio: {hitRatio}</p>
-	<p>InsertRatio: {insertRatio}</p>
-	<p>PruneRatio: {pruneRatio}</p>
+	<div class="panel panel-{hitRatio.status}">
+		<div class="panel-heading">
+			<h3 class="panel-title">Hit Ratio</h3>
+		</div>
+		<div class="panel-body">{hitRatio.value}%</div>
+	</div>
+	<div class="panel panel-{insertRatio.status}">
+		<div class="panel-heading">
+			<h3 class="panel-title">Insert Ratio</h3>
+		</div>
+		<div class="panel-body">{insertRatio.value}%</div>
+	</div>
+	<div class="panel panel-{pruneRatio.status}">
+		<div class="panel-heading">
+			<h3 class="panel-title">Prune Ratio</h3>
+		</div>
+		<div class="panel-body">{pruneRatio.value}%</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Average Query size</h3>
+		</div>
+		<div class="panel-body">
+			<p>Average Query Size in Query Cache: {avgQuerySize}</p>
+			<p>Query Cache Limit (query_cache_limit): {variables.queryCacheLimit}</p>
+			<p>Initial Blocksize for new inserted Queries(query_cache_min_res_unit): {variables.queryCacheMinResUnit}</p>
+		</div>
+	</div>
 </sf:queryCache>

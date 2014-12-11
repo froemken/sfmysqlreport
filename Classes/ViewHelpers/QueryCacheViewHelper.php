@@ -43,10 +43,12 @@ class QueryCacheViewHelper extends AbstractViewHelper {
 		$this->templateVariableContainer->add('hitRatio', $this->getHitRatio($status));
 		$this->templateVariableContainer->add('insertRatio', $this->getInsertRatio($status));
 		$this->templateVariableContainer->add('pruneRatio', $this->getPruneRatio($status));
+		$this->templateVariableContainer->add('avgQuerySize', $this->getAvgQuerySize($status, $variables));
 		$content = $this->renderChildren();
 		$this->templateVariableContainer->remove('hitRatio');
 		$this->templateVariableContainer->remove('insertRatio');
 		$this->templateVariableContainer->remove('pruneRatio');
+		$this->templateVariableContainer->remove('avgQuerySize');
 		return $content;
 	}
 
@@ -54,33 +56,80 @@ class QueryCacheViewHelper extends AbstractViewHelper {
 	 * get hit ratio of query cache
 	 *
 	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
-	 * @return float
+	 * @return array
 	 */
 	protected function getHitRatio(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status) {
+		$result = array();
 		$hitRatio = ($status->getQcacheHits() / ($status->getQcacheHits() + $status->getComSelect())) * 100;
-		return round($hitRatio, 2) . '%';
+		if ($hitRatio <= 20) {
+			$result['status'] = 'danger';
+		} elseif ($hitRatio <= 40) {
+			$result['status'] = 'warning';
+		} else {
+			$result['status'] = 'success';
+		}
+		$result['value'] = round($hitRatio, 2);
+		return $result;
 	}
 
 	/**
 	 * get insert ratio of query cache
 	 *
 	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
-	 * @return float
+	 * @return array
 	 */
 	protected function getInsertRatio(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status) {
 		$insertRatio = ($status->getQcacheInserts() / ($status->getQcacheHits() + $status->getComSelect())) * 100;
-		return round($insertRatio, 2) . '%';
+		if ($insertRatio <= 20) {
+			$result['status'] = 'success';
+		} elseif ($insertRatio <= 40) {
+			$result['status'] = 'warning';
+		} else {
+			$result['status'] = 'danger';
+		}
+		$result['value'] = round($insertRatio, 2);
+		return $result;
 	}
 
 	/**
 	 * get prune ratio of query cache
 	 *
 	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
-	 * @return float
+	 * @return array
 	 */
 	protected function getPruneRatio(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status) {
 		$pruneRatio = ($status->getQcacheLowmemPrunes() / $status->getQcacheInserts()) * 100;
-		return round($pruneRatio, 2) . '%';
+		if ($pruneRatio <= 10) {
+			$result['status'] = 'success';
+		} elseif ($pruneRatio <= 40) {
+			$result['status'] = 'warning';
+		} else {
+			$result['status'] = 'danger';
+		}
+		$result['value'] = round($pruneRatio, 2);
+		return $result;
+	}
+
+	/**
+	 * get avg query size in query cache
+	 *
+	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
+	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Variables $variables
+	 * @return float
+	 */
+	protected function getAvgQuerySize(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status, \StefanFroemken\Sfmysqlreport\Domain\Model\Variables $variables) {
+		return round($this->getUsedQueryCacheSize($status, $variables) / $status->getQcacheQueriesInCache(), 2);
+	}
+	/**
+	 * get used query size in bytes
+	 *
+	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
+	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Variables $variables
+	 * @return float
+	 */
+	protected function getUsedQueryCacheSize(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status, \StefanFroemken\Sfmysqlreport\Domain\Model\Variables $variables) {
+		$queryCacheSize = $variables->getQueryCacheSize() - (40 * 1024); // ~40KB are reserved by operating system
+		return $queryCacheSize - $status->getQcacheFreeMemory();
 	}
 
 }
