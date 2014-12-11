@@ -27,7 +27,7 @@ namespace StefanFroemken\Sfmysqlreport\Domain\Repository;
 /**
  * This model saves the mysql status
  */
-class StatusRepository extends \StefanFroemken\Sfmysqlreport\Domain\Repository\AbstractRepository {
+class StatusRepository extends AbstractRepository {
 
 	/**
 	 * get status from MySql

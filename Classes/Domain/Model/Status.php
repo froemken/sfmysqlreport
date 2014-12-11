@@ -44,6 +44,13 @@ class Status {
 	protected $abortedConnects = 0;
 
 	/**
+	 * Com_select
+	 *
+	 * @var int
+	 */
+	protected $comSelect = 0;
+
+	/**
 	 * Created_tmp_disk_tables
 	 *
 	 * @var int
@@ -121,6 +128,62 @@ class Status {
 	protected $openedTables = 0;
 
 	/**
+	 * qcacheFreeBlocks
+	 *
+	 * @var int
+	 */
+	protected $qcacheFreeBlocks = 0;
+
+	/**
+	 * qcacheFreeMemory
+	 *
+	 * @var int
+	 */
+	protected $qcacheFreeMemory = 0;
+
+	/**
+	 * qcacheHits
+	 *
+	 * @var int
+	 */
+	protected $qcacheHits = 0;
+
+	/**
+	 * qcacheInserts
+	 *
+	 * @var int
+	 */
+	protected $qcacheInserts = 0;
+
+	/**
+	 * qcacheLowmemPrunes
+	 *
+	 * @var int
+	 */
+	protected $qcacheLowmemPrunes = 0;
+
+	/**
+	 * qcacheNotCached
+	 *
+	 * @var int
+	 */
+	protected $qcacheNotCached = 0;
+
+	/**
+	 * qcacheQueriesInCache
+	 *
+	 * @var int
+	 */
+	protected $qcacheQueriesInCache = 0;
+
+	/**
+	 * qcacheTotalBlocks
+	 *
+	 * @var int
+	 */
+	protected $qcacheTotalBlocks = 0;
+
+	/**
 	 * Threads_connected
 	 *
 	 * @var int
@@ -181,6 +244,25 @@ class Status {
 	 */
 	public function setAbortedConnects($abortedConnects) {
 		$this->abortedConnects = $abortedConnects;
+	}
+
+	/**
+	 * Returns the comSelect
+	 *
+	 * @return int $comSelect
+	 */
+	public function getComSelect() {
+		return $this->comSelect;
+	}
+
+	/**
+	 * Sets the comSelect
+	 *
+	 * @param int $comSelect
+	 * @return void
+	 */
+	public function setComSelect($comSelect) {
+		$this->comSelect = $comSelect;
 	}
 
 	/**
@@ -390,6 +472,158 @@ class Status {
 	 */
 	public function setOpenedTables($openedTables) {
 		$this->openedTables = $openedTables;
+	}
+
+	/**
+	 * Returns the qcacheFreeBlocks
+	 *
+	 * @return int $qcacheFreeBlocks
+	 */
+	public function getQcacheFreeBlocks() {
+		return $this->qcacheFreeBlocks;
+	}
+
+	/**
+	 * Sets the qcacheFreeBlocks
+	 *
+	 * @param int $qcacheFreeBlocks
+	 * @return void
+	 */
+	public function setQcacheFreeBlocks($qcacheFreeBlocks) {
+		$this->qcacheFreeBlocks = $qcacheFreeBlocks;
+	}
+
+	/**
+	 * Returns the qcacheFreeMemory
+	 *
+	 * @return int $qcacheFreeMemory
+	 */
+	public function getQcacheFreeMemory() {
+		return $this->qcacheFreeMemory;
+	}
+
+	/**
+	 * Sets the qcacheFreeMemory
+	 *
+	 * @param int $qcacheFreeMemory
+	 * @return void
+	 */
+	public function setQcacheFreeMemory($qcacheFreeMemory) {
+		$this->qcacheFreeMemory = $qcacheFreeMemory;
+	}
+
+	/**
+	 * Returns the qcacheHits
+	 *
+	 * @return int $qcacheHits
+	 */
+	public function getQcacheHits() {
+		return $this->qcacheHits;
+	}
+
+	/**
+	 * Sets the qcacheHits
+	 *
+	 * @param int $qcacheHits
+	 * @return void
+	 */
+	public function setQcacheHits($qcacheHits) {
+		$this->qcacheHits = $qcacheHits;
+	}
+
+	/**
+	 * Returns the qcacheInserts
+	 *
+	 * @return int $qcacheInserts
+	 */
+	public function getQcacheInserts() {
+		return $this->qcacheInserts;
+	}
+
+	/**
+	 * Sets the qcacheInserts
+	 *
+	 * @param int $qcacheInserts
+	 * @return void
+	 */
+	public function setQcacheInserts($qcacheInserts) {
+		$this->qcacheInserts = $qcacheInserts;
+	}
+
+	/**
+	 * Returns the qcacheLowmemPrunes
+	 *
+	 * @return int $qcacheLowmemPrunes
+	 */
+	public function getQcacheLowmemPrunes() {
+		return $this->qcacheLowmemPrunes;
+	}
+
+	/**
+	 * Sets the qcacheLowmemPrunes
+	 *
+	 * @param int $qcacheLowmemPrunes
+	 * @return void
+	 */
+	public function setQcacheLowmemPrunes($qcacheLowmemPrunes) {
+		$this->qcacheLowmemPrunes = $qcacheLowmemPrunes;
+	}
+
+	/**
+	 * Returns the qcacheNotCached
+	 *
+	 * @return int $qcacheNotCached
+	 */
+	public function getQcacheNotCached() {
+		return $this->qcacheNotCached;
+	}
+
+	/**
+	 * Sets the qcacheNotCached
+	 *
+	 * @param int $qcacheNotCached
+	 * @return void
+	 */
+	public function setQcacheNotCached($qcacheNotCached) {
+		$this->qcacheNotCached = $qcacheNotCached;
+	}
+
+	/**
+	 * Returns the qcacheQueriesInCache
+	 *
+	 * @return int $qcacheQueriesInCache
+	 */
+	public function getQcacheQueriesInCache() {
+		return $this->qcacheQueriesInCache;
+	}
+
+	/**
+	 * Sets the qcacheQueriesInCache
+	 *
+	 * @param int $qcacheQueriesInCache
+	 * @return void
+	 */
+	public function setQcacheQueriesInCache($qcacheQueriesInCache) {
+		$this->qcacheQueriesInCache = $qcacheQueriesInCache;
+	}
+
+	/**
+	 * Returns the qcacheTotalBlocks
+	 *
+	 * @return int $qcacheTotalBlocks
+	 */
+	public function getQcacheTotalBlocks() {
+		return $this->qcacheTotalBlocks;
+	}
+
+	/**
+	 * Sets the qcacheTotalBlocks
+	 *
+	 * @param int $qcacheTotalBlocks
+	 * @return void
+	 */
+	public function setQcacheTotalBlocks($qcacheTotalBlocks) {
+		$this->qcacheTotalBlocks = $qcacheTotalBlocks;
 	}
 
 	/**

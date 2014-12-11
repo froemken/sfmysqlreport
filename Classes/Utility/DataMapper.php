@@ -38,12 +38,6 @@ class DataMapper {
 	protected $reflectionService;
 
 	/**
-	 * @var \TYPO3\CMS\Extbase\Service\TypeHandlingService
-	 * @inject
-	 */
-	protected $typeService;
-
-	/**
 	 * @var \TYPO3\CMS\Extbase\Object\ObjectManager
 	 * @inject
 	 */

@@ -72,6 +72,48 @@ class Variables {
 	protected $maxHeapTableSize = 0;
 
 	/**
+	 * queryCacheLimit
+	 *
+	 * @var int
+	 */
+	protected $queryCacheLimit = 0;
+
+	/**
+	 * queryCacheMinResUnit
+	 *
+	 * @var int
+	 */
+	protected $queryCacheMinResUnit = 0;
+
+	/**
+	 * queryCacheSize
+	 *
+	 * @var int
+	 */
+	protected $queryCacheSize = 0;
+
+	/**
+	 * queryCacheStripComments
+	 *
+	 * @var bool
+	 */
+	protected $queryCacheStripComments = FALSE;
+
+	/**
+	 * queryCacheType
+	 *
+	 * @var bool
+	 */
+	protected $queryCacheType = FALSE;
+
+	/**
+	 * queryCacheWlockInvalidate
+	 *
+	 * @var bool
+	 */
+	protected $queryCacheWlockInvalidate = FALSE;
+
+	/**
 	 * table_definition_cache
 	 *
 	 * @var int
@@ -215,6 +257,132 @@ class Variables {
 	 */
 	public function setMaxHeapTableSize($maxHeapTableSize) {
 		$this->maxHeapTableSize = $maxHeapTableSize;
+	}
+
+	/**
+	 * Returns the queryCacheLimit
+	 *
+	 * @return int $queryCacheLimit
+	 */
+	public function getQueryCacheLimit() {
+		return $this->queryCacheLimit;
+	}
+
+	/**
+	 * Sets the queryCacheLimit
+	 *
+	 * @param int $queryCacheLimit
+	 * @return void
+	 */
+	public function setQueryCacheLimit($queryCacheLimit) {
+		$this->queryCacheLimit = $queryCacheLimit;
+	}
+
+	/**
+	 * Returns the queryCacheMinResUnit
+	 *
+	 * @return int $queryCacheMinResUnit
+	 */
+	public function getQueryCacheMinResUnit() {
+		return $this->queryCacheMinResUnit;
+	}
+
+	/**
+	 * Sets the queryCacheMinResUnit
+	 *
+	 * @param int $queryCacheMinResUnit
+	 * @return void
+	 */
+	public function setQueryCacheMinResUnit($queryCacheMinResUnit) {
+		$this->queryCacheMinResUnit = $queryCacheMinResUnit;
+	}
+
+	/**
+	 * Returns the queryCacheSize
+	 *
+	 * @return int $queryCacheSize
+	 */
+	public function getQueryCacheSize() {
+		return $this->queryCacheSize;
+	}
+
+	/**
+	 * Sets the queryCacheSize
+	 *
+	 * @param int $queryCacheSize
+	 * @return void
+	 */
+	public function setQueryCacheSize($queryCacheSize) {
+		$this->queryCacheSize = $queryCacheSize;
+	}
+
+	/**
+	 * Returns the queryCacheStripComments
+	 *
+	 * @return bool $queryCacheStripComments
+	 */
+	public function getQueryCacheStripComments() {
+		return $this->queryCacheStripComments;
+	}
+
+	/**
+	 * Sets the queryCacheStripComments
+	 *
+	 * @param bool $queryCacheStripComments
+	 * @return void
+	 */
+	public function setQueryCacheStripComments($queryCacheStripComments) {
+		if ($queryCacheStripComments || strtolower($queryCacheStripComments) === 'on') {
+			$this->queryCacheStripComments = TRUE;
+		} else {
+			$this->queryCacheStripComments = FALSE;
+		}
+	}
+
+	/**
+	 * Returns the queryCacheType
+	 *
+	 * @return bool $queryCacheType
+	 */
+	public function getQueryCacheType() {
+		return $this->queryCacheType;
+	}
+
+	/**
+	 * Sets the queryCacheType
+	 *
+	 * @param bool $queryCacheType
+	 * @return void
+	 */
+	public function setQueryCacheType($queryCacheType) {
+		if ($queryCacheType || strtolower($queryCacheType) === 'on') {
+			$this->queryCacheType = TRUE;
+		} else {
+			$this->queryCacheType = FALSE;
+		}
+	}
+
+	/**
+	 * Returns the queryCacheWlockInvalidate
+	 *
+	 * @return bool $queryCacheWlockInvalidate
+	 */
+	public function getQueryCacheWlockInvalidate() {
+		return $this->queryCacheWlockInvalidate;
+	}
+
+	/**
+	 * Sets the queryCacheWlockInvalidate
+	 *
+	 * @param bool $queryCacheWlockInvalidate
+	 * @return void
+	 */
+	public function setQueryCacheWlockInvalidate($queryCacheWlockInvalidate) {
+		if ($queryCacheWlockInvalidate || strtolower($queryCacheWlockInvalidate) === 'on') {
+			$this->queryCacheWlockInvalidate = TRUE;
+		} else {
+			$this->queryCacheWlockInvalidate = FALSE;
+		}
 	}
 
 	/**
