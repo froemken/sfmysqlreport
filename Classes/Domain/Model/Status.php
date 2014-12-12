@@ -65,6 +65,13 @@ class Status {
 	protected $createdTmpTables = 0;
 
 	/**
+	 * Innodb_buffer_pool_pages_flushed
+	 *
+	 * @var int
+	 */
+	protected $innodbBufferPoolPagesFlushed = 0;
+
+	/**
 	 * Innodb_buffer_pool_read_requests
 	 *
 	 * @var int
@@ -77,6 +84,13 @@ class Status {
 	 * @var int
 	 */
 	protected $innodbBufferPoolReads = 0;
+
+	/**
+	 * Innodb_buffer_pool_write_requests
+	 *
+	 * @var int
+	 */
+	protected $innodbBufferPoolWriteRequests = 0;
 
 	/**
 	 * Key_blocks_unused
@@ -311,6 +325,25 @@ class Status {
 	}
 
 	/**
+	 * Returns the innodbBufferPoolPagesFlushed
+	 *
+	 * @return int $innodbBufferPoolPagesFlushed
+	 */
+	public function getInnodbBufferPoolPagesFlushed() {
+		return $this->innodbBufferPoolPagesFlushed;
+	}
+
+	/**
+	 * Sets the innodbBufferPoolPagesFlushed
+	 *
+	 * @param int $innodbBufferPoolPagesFlushed
+	 * @return void
+	 */
+	public function setInnodbBufferPoolPagesFlushed($innodbBufferPoolPagesFlushed) {
+		$this->innodbBufferPoolPagesFlushed = $innodbBufferPoolPagesFlushed;
+	}
+
+	/**
 	 * Getter for Innodb_buffer_pool_read_requests
 	 *
 	 * @return int
@@ -346,6 +379,25 @@ class Status {
 	 */
 	public function setInnodbBufferPoolReads($innodbBufferPoolReads) {
 		$this->innodbBufferPoolReads = $innodbBufferPoolReads;
+	}
+
+	/**
+	 * Returns the innodbBufferPoolWriteRequests
+	 *
+	 * @return int $innodbBufferPoolWriteRequests
+	 */
+	public function getInnodbBufferPoolWriteRequests() {
+		return $this->innodbBufferPoolWriteRequests;
+	}
+
+	/**
+	 * Sets the innodbBufferPoolWriteRequests
+	 *
+	 * @param int $innodbBufferPoolWriteRequests
+	 * @return void
+	 */
+	public function setInnodbBufferPoolWriteRequests($innodbBufferPoolWriteRequests) {
+		$this->innodbBufferPoolWriteRequests = $innodbBufferPoolWriteRequests;
 	}
 
 	/**

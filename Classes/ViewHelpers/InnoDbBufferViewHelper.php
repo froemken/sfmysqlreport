@@ -41,8 +41,10 @@ class InnoDbBufferViewHelper extends AbstractViewHelper {
 	 */
 	public function render(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status, \StefanFroemken\Sfmysqlreport\Domain\Model\Variables $variables) {
 		$this->templateVariableContainer->add('hitRatio', $this->getHitRatio($status));
+		$this->templateVariableContainer->add('writeRatio', $this->getWriteRatio($status));
 		$content = $this->renderChildren();
 		$this->templateVariableContainer->remove('hitRatio');
+		$this->templateVariableContainer->remove('writeRatio');
 		return $content;
 	}
 
@@ -56,14 +58,35 @@ class InnoDbBufferViewHelper extends AbstractViewHelper {
 	protected function getHitRatio(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status) {
 		$result = array();
 		$hitRatio = ($status->getInnodbBufferPoolReadRequests() / ($status->getInnodbBufferPoolReadRequests() + $status->getInnodbBufferPoolReads())) * 100;
-		if ($hitRatio <= 99) {
+		if ($hitRatio <= 90) {
 			$result['status'] = 'danger';
-		} elseif ($hitRatio <= 99.8) {
+		} elseif ($hitRatio <= 99.7) {
 			$result['status'] = 'warning';
 		} else {
 			$result['status'] = 'success';
 		}
 		$result['value'] = round($hitRatio, 2);
+		return $result;
+	}
+
+	/**
+	 * get write ratio of innoDb Buffer
+	 * A value more higher than 1 is good
+	 *
+	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
+	 * @return array
+	 */
+	protected function getWriteRatio(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status) {
+		$result = array();
+		$writeRatio = $status->getInnodbBufferPoolWriteRequests() / $status->getInnodbBufferPoolPagesFlushed();
+		if ($writeRatio <= 1) {
+			$result['status'] = 'danger';
+		} elseif ($writeRatio <= 1.5) {
+			$result['status'] = 'warning';
+		} else {
+			$result['status'] = 'success';
+		}
+		$result['value'] = round($writeRatio, 2);
 		return $result;
 	}
 
