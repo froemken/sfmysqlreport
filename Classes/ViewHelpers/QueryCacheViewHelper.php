@@ -72,7 +72,7 @@ class QueryCacheViewHelper extends AbstractViewHelper {
 		} else {
 			$result['status'] = 'success';
 		}
-		$result['value'] = round($hitRatio, 2);
+		$result['value'] = round($hitRatio, 4);
 		return $result;
 	}
 
@@ -92,7 +92,7 @@ class QueryCacheViewHelper extends AbstractViewHelper {
 		} else {
 			$result['status'] = 'danger';
 		}
-		$result['value'] = round($insertRatio, 2);
+		$result['value'] = round($insertRatio, 4);
 		return $result;
 	}
 
@@ -112,7 +112,7 @@ class QueryCacheViewHelper extends AbstractViewHelper {
 		} else {
 			$result['status'] = 'danger';
 		}
-		$result['value'] = round($pruneRatio, 2);
+		$result['value'] = round($pruneRatio, 4);
 		return $result;
 	}
 
@@ -131,7 +131,7 @@ class QueryCacheViewHelper extends AbstractViewHelper {
 		} else {
 			$result['status'] = 'success';
 		}
-		$result['value'] = round($avgQuerySize, 2);
+		$result['value'] = round($avgQuerySize, 4);
 		return $result;
 	}
 
@@ -163,7 +163,7 @@ class QueryCacheViewHelper extends AbstractViewHelper {
 		} else {
 			$result['status'] = 'danger';
 		}
-		$result['value'] = round($fragmentation, 2);
+		$result['value'] = round($fragmentation, 4);
 		return $result;
 	}
 
@@ -190,7 +190,7 @@ class QueryCacheViewHelper extends AbstractViewHelper {
 		} else {
 			$result['status'] = 'big';
 		}
-		$result['value'] = round($avgUsedBlocks, 2);
+		$result['value'] = round($avgUsedBlocks, 4);
 		return $result;
 	}
 

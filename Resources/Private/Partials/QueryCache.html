@@ -5,19 +5,36 @@
 		<div class="panel-heading">
 			<h3 class="panel-title">Hit Ratio</h3>
 		</div>
-		<div class="panel-body">{hitRatio.value}%</div>
+		<div class="panel-body">
+			<p>{hitRatio.value}%</p>
+			<p>As higher as better.</p>
+		</div>
 	</div>
 	<div class="panel panel-{insertRatio.status}">
 		<div class="panel-heading">
 			<h3 class="panel-title">Insert Ratio</h3>
 		</div>
-		<div class="panel-body">{insertRatio.value}%</div>
+		<div class="panel-body">
+			<p>{insertRatio.value}%</p>
+			<p>This indicates if queries are written into cache very often</p>
+			<p>If you have just started your MySQL-Server or have less SELECT-Statement this value can be red or yellow. So please wait till all caches are warmed up.</p>
+		</div>
 	</div>
 	<div class="panel panel-{pruneRatio.status}">
 		<div class="panel-heading">
 			<h3 class="panel-title">Prune Ratio</h3>
 		</div>
-		<div class="panel-body">{pruneRatio.value}%</div>
+		<div class="panel-body">
+			<p>{pruneRatio.value}%</p>
+			<p>This is the ratio between deleted and inserted queries in cache.</p>
+			<p>If a new query was written into Cache and prune increases, it may indicate, that query_cache_size is too small.
+				But be careful and don't set query_cache_size too high. A maximum of 256MB should be OK.
+			</p>
+			<p>If ratio is still high you should check your query_cache_limit. Please check section "Average used blocks" below</p>
+			<p>If ratio is still too high you have too much different queries. Please deactivate Query Cache completely.
+				It does not make sense to increase query_cache_size, because of mutex/concurrency while updating or deleting records
+			</p>
+		</div>
 	</div>
 	<div class="panel panel-{fragmentationRatio.status}">
 		<div class="panel-heading">
