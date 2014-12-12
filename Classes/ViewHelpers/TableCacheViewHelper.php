@@ -40,53 +40,51 @@ class TableCacheViewHelper extends AbstractViewHelper {
 	 * @return string
 	 */
 	public function render(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status, \StefanFroemken\Sfmysqlreport\Domain\Model\Variables $variables) {
-		$this->templateVariableContainer->add('hitRatio', $this->getHitRatio($status));
-		$this->templateVariableContainer->add('writeRatio', $this->getWriteRatio($status));
+		$this->templateVariableContainer->add('openedTableDefsEachSecond', $this->getOpenedTableDefinitionsEachSecond($status));
+		$this->templateVariableContainer->add('openedTablesEachSecond', $this->getOpenedTablesEachSecond($status));
 		$content = $this->renderChildren();
-		$this->templateVariableContainer->remove('hitRatio');
-		$this->templateVariableContainer->remove('writeRatio');
+		$this->templateVariableContainer->remove('openedTableDefsEachSecond');
+		$this->templateVariableContainer->remove('openedTablesEachSecond');
 		return $content;
 	}
 
 	/**
-	 * get hit ratio of innoDb Buffer
-	 * A ratio of 99.9 equals 1/1000
+	 * get amount of opened table definitions each second
 	 *
 	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
 	 * @return array
 	 */
-	protected function getHitRatio(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status) {
+	protected function getOpenedTableDefinitionsEachSecond(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status) {
 		$result = array();
-		$hitRatio = ($status->getInnodbBufferPoolReadRequests() / ($status->getInnodbBufferPoolReadRequests() + $status->getInnodbBufferPoolReads())) * 100;
-		if ($hitRatio <= 90) {
-			$result['status'] = 'danger';
-		} elseif ($hitRatio <= 99.7) {
+		$openedTableDefinitions = $status->getOpenedTableDefinitions() / $status->getUptime();
+		if ($openedTableDefinitions <= 0.3) {
+			$result['status'] = 'success';
+		} elseif ($openedTableDefinitions <= 2) {
 			$result['status'] = 'warning';
 		} else {
-			$result['status'] = 'success';
+			$result['status'] = 'danger';
 		}
-		$result['value'] = round($hitRatio, 2);
+		$result['value'] = round($openedTableDefinitions, 4);
 		return $result;
 	}
 
 	/**
-	 * get write ratio of innoDb Buffer
-	 * A value more higher than 1 is good
+	 * get amount of opened tables each second
 	 *
 	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
 	 * @return array
 	 */
-	protected function getWriteRatio(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status) {
+	protected function getOpenedTablesEachSecond(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status) {
 		$result = array();
-		$writeRatio = $status->getInnodbBufferPoolWriteRequests() / $status->getInnodbBufferPoolPagesFlushed();
-		if ($writeRatio <= 2) {
-			$result['status'] = 'danger';
-		} elseif ($writeRatio <= 7) {
+		$openedTables = $status->getOpenedTables() / $status->getUptime();
+		if ($openedTables <= 0.6) {
+			$result['status'] = 'success';
+		} elseif ($openedTables <= 4) {
 			$result['status'] = 'warning';
 		} else {
-			$result['status'] = 'success';
+			$result['status'] = 'danger';
 		}
-		$result['value'] = round($writeRatio, 2);
+		$result['value'] = round($openedTables, 4);
 		return $result;
 	}
 
