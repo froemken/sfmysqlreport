@@ -47,17 +47,18 @@ class InnoDbBufferViewHelper extends AbstractViewHelper {
 	}
 
 	/**
-	 * get hit ratio of query cache
+	 * get hit ratio of innoDb Buffer
+	 * A ratio of 99.9 equals 1/1000
 	 *
 	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
 	 * @return array
 	 */
 	protected function getHitRatio(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status) {
 		$result = array();
-		$hitRatio = ($status->getQcacheHits() / ($status->getQcacheHits() + $status->getComSelect())) * 100;
-		if ($hitRatio <= 20) {
+		$hitRatio = ($status->getInnodbBufferPoolReadRequests() / ($status->getInnodbBufferPoolReadRequests() + $status->getInnodbBufferPoolReads())) * 100;
+		if ($hitRatio <= 99) {
 			$result['status'] = 'danger';
-		} elseif ($hitRatio <= 40) {
+		} elseif ($hitRatio <= 99.8) {
 			$result['status'] = 'warning';
 		} else {
 			$result['status'] = 'success';

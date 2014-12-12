@@ -78,7 +78,7 @@ class DataMapper {
 						break;
 					case 'bool':
 					case 'boolean':
-						$object->$methodName((bool) $value);
+						$object->$methodName($value);
 						break;
 					case 'string':
 						$object->$methodName((string) $value);

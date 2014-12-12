@@ -44,6 +44,13 @@ class Variables {
 	protected $innodbFlushLogAtTrxCommit = 0;
 
 	/**
+	 * innodb_buffer_pool_size
+	 *
+	 * @var int
+	 */
+	protected $innodbBufferPoolSize = 0;
+
+	/**
 	 * join_buffer_size
 	 *
 	 * @var int
@@ -181,6 +188,25 @@ class Variables {
 	 */
 	public function setInnodbFlushLogAtTrxCommit($innodbFlushLogAtTrxCommit) {
 		$this->innodbFlushLogAtTrxCommit = $innodbFlushLogAtTrxCommit;
+	}
+
+	/**
+	 * Returns the innodbBufferPoolSize
+	 *
+	 * @return int $innodbBufferPoolSize
+	 */
+	public function getInnodbBufferPoolSize() {
+		return $this->innodbBufferPoolSize;
+	}
+
+	/**
+	 * Sets the innodbBufferPoolSize
+	 *
+	 * @param int $innodbBufferPoolSize
+	 * @return void
+	 */
+	public function setInnodbBufferPoolSize($innodbBufferPoolSize) {
+		$this->innodbBufferPoolSize = $innodbBufferPoolSize;
 	}
 
 	/**
@@ -355,7 +381,7 @@ class Variables {
 	 * @return void
 	 */
 	public function setQueryCacheType($queryCacheType) {
-		if ($queryCacheType || strtolower($queryCacheType) === 'on') {
+		if ($queryCacheType == 1 || strtolower($queryCacheType) === 'on') {
 			$this->queryCacheType = TRUE;
 		} else {
 			$this->queryCacheType = FALSE;

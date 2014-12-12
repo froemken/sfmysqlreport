@@ -82,4 +82,14 @@ class MySqlController extends ActionController {
 		$this->view->assign('variables', $this->variablesRepository->findAll());
 	}
 
+	/**
+	 * innoDb Buffer action
+	 *
+	 * @return void
+	 */
+	public function innoDbBufferAction() {
+		$this->view->assign('status', $this->statusRepository->findAll());
+		$this->view->assign('variables', $this->variablesRepository->findAll());
+	}
+
 }
