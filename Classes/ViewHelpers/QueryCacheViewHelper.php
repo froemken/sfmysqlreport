@@ -45,12 +45,14 @@ class QueryCacheViewHelper extends AbstractViewHelper {
 		$this->templateVariableContainer->add('pruneRatio', $this->getPruneRatio($status));
 		$this->templateVariableContainer->add('fragmentationRatio', $this->getFragmentationRatio($status));
 		$this->templateVariableContainer->add('avgQuerySize', $this->getAvgQuerySize($status, $variables));
+		$this->templateVariableContainer->add('avgUsedBlocks', $this->getAvgUsedBlocks($status));
 		$content = $this->renderChildren();
 		$this->templateVariableContainer->remove('hitRatio');
 		$this->templateVariableContainer->remove('insertRatio');
 		$this->templateVariableContainer->remove('pruneRatio');
 		$this->templateVariableContainer->remove('fragmentationRatio');
 		$this->templateVariableContainer->remove('avgQuerySize');
+		$this->templateVariableContainer->remove('avgUsedBlocks');
 		return $content;
 	}
 
@@ -81,6 +83,7 @@ class QueryCacheViewHelper extends AbstractViewHelper {
 	 * @return array
 	 */
 	protected function getInsertRatio(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status) {
+		$result = array();
 		$insertRatio = ($status->getQcacheInserts() / ($status->getQcacheHits() + $status->getComSelect())) * 100;
 		if ($insertRatio <= 20) {
 			$result['status'] = 'success';
@@ -100,6 +103,7 @@ class QueryCacheViewHelper extends AbstractViewHelper {
 	 * @return array
 	 */
 	protected function getPruneRatio(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status) {
+		$result = array();
 		$pruneRatio = ($status->getQcacheLowmemPrunes() / $status->getQcacheInserts()) * 100;
 		if ($pruneRatio <= 10) {
 			$result['status'] = 'success';
@@ -117,10 +121,18 @@ class QueryCacheViewHelper extends AbstractViewHelper {
 	 *
 	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
 	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Variables $variables
-	 * @return float
+	 * @return array
 	 */
 	protected function getAvgQuerySize(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status, \StefanFroemken\Sfmysqlreport\Domain\Model\Variables $variables) {
-		return round($this->getUsedQueryCacheSize($status, $variables) / $status->getQcacheQueriesInCache(), 2);
+		$result = array();
+		$avgQuerySize = $this->getUsedQueryCacheSize($status, $variables) / $status->getQcacheQueriesInCache();
+		if ($avgQuerySize > $variables->getQueryCacheMinResUnit()) {
+			$result['status'] = 'danger';
+		} else {
+			$result['status'] = 'success';
+		}
+		$result['value'] = round($avgQuerySize, 2);
+		return $result;
 	}
 
 	/**
@@ -139,11 +151,12 @@ class QueryCacheViewHelper extends AbstractViewHelper {
 	 * get fragmentation ratio
 	 *
 	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
-	 * @return float
+	 * @return array
 	 */
 	protected function getFragmentationRatio(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status) {
+		$result = array();
 		$fragmentation = ($status->getQcacheFreeBlocks() / ($status->getQcacheTotalBlocks() / 2)) * 100; // total blocks / 2 = maximum fragmentation
-		if ($fragmentation <= 10) {
+		if ($fragmentation <= 15) {
 			$result['status'] = 'success';
 		} elseif ($fragmentation <= 25) {
 			$result['status'] = 'warning';
@@ -151,6 +164,33 @@ class QueryCacheViewHelper extends AbstractViewHelper {
 			$result['status'] = 'danger';
 		}
 		$result['value'] = round($fragmentation, 2);
+		return $result;
+	}
+
+	/**
+	 * get average used blocks each query
+	 * this can indicate if you use more small or big queries
+	 * Quote from link: Every cached query requires a minimum of two blocks (one for the query text and one or more for the query results).
+	 *
+	 * @link: http://dev.mysql.com/doc/refman/5.0/en/query-cache-status-and-maintenance.html
+	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
+	 * @return array
+	 */
+	protected function getAvgUsedBlocks(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status) {
+		$result = array();
+		$usedBlocks = $status->getQcacheTotalBlocks() - $status->getQcacheFreeBlocks();
+		$minimumUsedBlocks = $status->getQcacheQueriesInCache() * 2; // see link above
+		$avgUsedBlocks = $usedBlocks / $minimumUsedBlocks;
+		if ($avgUsedBlocks <= 1.3) {
+			$result['status'] = 'very small';
+		} elseif ($avgUsedBlocks <= 2) {
+			$result['status'] = 'small';
+		} elseif ($avgUsedBlocks <= 5) {
+			$result['status'] = 'medium';
+		} else {
+			$result['status'] = 'big';
+		}
+		$result['value'] = round($avgUsedBlocks, 2);
 		return $result;
 	}
 

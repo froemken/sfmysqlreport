@@ -32,14 +32,30 @@
 			<p>If you want to clear query cache you should use: RESET QUERY CACHE</p>
 		</div>
 	</div>
-	<div class="panel panel-default">
+	<div class="panel panel-{avgQuerySize.status}">
 		<div class="panel-heading">
 			<h3 class="panel-title">Average Query size</h3>
 		</div>
 		<div class="panel-body">
-			<p>Average Query Size in Query Cache: {avgQuerySize} Byte</p>
-			<p>Query Cache Limit (query_cache_limit): {variables.queryCacheLimit} Byte</p>
-			<p>Initial Blocksize for new inserted Queries(query_cache_min_res_unit): {variables.queryCacheMinResUnit} Byte</p>
+			<p>Average Query Size of <strong>{avgQuerySize.value}</strong> Bytes should not be higher than <strong>{variables.queryCacheMinResUnit}</strong> (query_cache_min_res_unit).</p>
+			<f:if condition="{0:avgQuerySize.status}=={0: 'danger'}">
+				<p>Please set query_cache_min_res_unit a little bit higher than average Query Size.</p>
+			</f:if>
+		</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Average used blocks</h3>
+		</div>
+		<div class="panel-body">
+			<p>With an average amount of <strong>{avgUsedBlocks.value}</strong> used blocks you have overall <strong>{avgUsedBlocks.status}</strong> Queries in Cache</p>
+			<p>Please adjust query_cache_limit of currently <strong>{variables.queryCacheLimit}</strong> Bytes to your needs:</p>
+			<ul>
+				<li><strong>very small</strong> queries: 16KB - 128KB</li>
+				<li><strong>small</strong> queries: 128KB - 256KB</li>
+				<li><strong>medium</strong> queries: 256KB - 1MB</li>
+				<li><strong>big</strong> queries: 1MB - 4MB</li>
+			</ul>
 		</div>
 	</div>
 </sf:queryCache>
