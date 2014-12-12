@@ -51,6 +51,13 @@ class Status {
 	protected $comSelect = 0;
 
 	/**
+	 * Connections
+	 *
+	 * @var int
+	 */
+	protected $connections = 0;
+
+	/**
 	 * Created_tmp_disk_tables
 	 *
 	 * @var int
@@ -284,6 +291,25 @@ class Status {
 	 */
 	public function setComSelect($comSelect) {
 		$this->comSelect = $comSelect;
+	}
+
+	/**
+	 * Returns the connections
+	 *
+	 * @return int $connections
+	 */
+	public function getConnections() {
+		return $this->connections;
+	}
+
+	/**
+	 * Sets the connections
+	 *
+	 * @param int $connections
+	 * @return void
+	 */
+	public function setConnections($connections) {
+		$this->connections = $connections;
 	}
 
 	/**

@@ -79,9 +79,9 @@ class InnoDbBufferViewHelper extends AbstractViewHelper {
 	protected function getWriteRatio(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status) {
 		$result = array();
 		$writeRatio = $status->getInnodbBufferPoolWriteRequests() / $status->getInnodbBufferPoolPagesFlushed();
-		if ($writeRatio <= 1) {
+		if ($writeRatio <= 2) {
 			$result['status'] = 'danger';
-		} elseif ($writeRatio <= 1.5) {
+		} elseif ($writeRatio <= 7) {
 			$result['status'] = 'warning';
 		} else {
 			$result['status'] = 'success';
