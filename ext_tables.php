@@ -6,7 +6,7 @@ if (!defined('TYPO3_MODE')) {
 if (TYPO3_MODE == 'BE') {
 	\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
 		'StefanFroemken.' . $_EXTKEY,
-		'web',	// Make module a submodule of 'web'
+		'system',	// Make module a submodule of 'web'
 		'mysql',	// Submodule key
 		'',	// Position
 		array(
