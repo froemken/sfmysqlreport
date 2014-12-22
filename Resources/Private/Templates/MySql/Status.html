@@ -1,0 +1,37 @@
+{namespace sf=StefanFroemken\Sfmysqlreport\ViewHelpers}
+
+<f:layout name="Default" />
+
+<f:section name="content">
+	<f:render partial="Uptime" arguments="{status: status}" />
+
+	<f:if condition="{profiles}">
+		<f:then>
+			<f:groupedFor each="{profiles}" as="groupedProfiles" groupBy="crdate" groupKey="crdate">
+				<p>{crdate -> f:format.date(format: 'd.m.Y H:i:s')}</p>
+				<table class="table">
+					<thead>
+					<th>Query Type</th>
+					<th>SUM Duration</th>
+					</thead>
+					<tbody>
+					<f:for each="{groupedProfiles}" as="profile">
+						<tr>
+							<td>{profile.query_type}</td>
+							<td>{profile.summed_duration}</td>
+						</tr>
+					</f:for>
+					<tr>
+						<td><strong>SUM:</strong></td>
+						<td><strong>{sf:sum(profiles: groupedProfiles)->f:format.number(decimals: 8)}</strong></td>
+					</tr>
+					</tbody>
+				</table>
+			</f:groupedFor>
+		</f:then>
+		<f:else>
+			<p>No profiles collected. Please visit Frontend to collect profiles.</p>
+		</f:else>
+	</f:if>
+
+</f:section>
