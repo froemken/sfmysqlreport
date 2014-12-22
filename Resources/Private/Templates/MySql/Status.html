@@ -3,8 +3,6 @@
 <f:layout name="Default" />
 
 <f:section name="content">
-	<f:render partial="Uptime" arguments="{status: status}" />
-
 	<f:if condition="{profiles}">
 		<f:then>
 			<f:groupedFor each="{profiles}" as="groupedProfiles" groupBy="crdate" groupKey="crdate">
@@ -33,5 +31,4 @@
 			<p>No profiles collected. Please visit Frontend to collect profiles.</p>
 		</f:else>
 	</f:if>
-
 </f:section>
