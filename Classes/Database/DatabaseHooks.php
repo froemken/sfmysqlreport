@@ -54,11 +54,15 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 	}
 
 	/**
-	 * constructor of this class
+	 * destructor of this class
 	 */
 	public function __destruct() {
 		$this->databaseConnection->sql_query('SET profiling = 0;');
-		$this->databaseConnection->exec_INSERTmultipleRows('tx_sfmysqlreport_domain_model_profile', array('query_id', 'duration', 'query', 'query_type', 'crdate'), $this->profiles);
+		$this->databaseConnection->exec_INSERTmultipleRows(
+			'tx_sfmysqlreport_domain_model_profile',
+			array('query_id', 'duration', 'query', 'query_type', 'crdate', 'profile', 'mode'),
+			$this->profiles
+		);
 	}
 
 	/**
@@ -77,10 +81,19 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 		$profiles = $this->databaseConnection->sql_query('SHOW PROFILES');
 		// $row: 1:Duration, 2:Query, 3:Query_ID
 		while ($row = $this->databaseConnection->sql_fetch_assoc($profiles)) {
-			$parts = GeneralUtility::trimExplode(' ', $row['Query'], TRUE, 2);
-			$row['Query_type'] = $parts[0];
-			$row['crdate'] = $GLOBALS['EXEC_TIME'];
-			$this->profiles[(int)$row['Query_ID']] = $row;
+			if (!array_key_exists((int)$row['Query_ID'], $this->profiles)) {
+				$parts = GeneralUtility::trimExplode(' ', $row['Query'], TRUE, 2);
+				$row['Query_type'] = $parts[0];
+				$row['crdate'] = (int)$GLOBALS['EXEC_TIME'];
+				$showProfile = $this->databaseConnection->sql_query('SHOW PROFILE FOR QUERY ' . (int)$row['Query_ID']);
+				$profile = array();
+				while ($profileRow = $this->databaseConnection->sql_fetch_assoc($showProfile)) {
+					$profile[] = $profileRow;
+				}
+				$row['profile'] = serialize($profile);
+				$row['mode'] = (string)TYPO3_MODE;
+				$this->profiles[(int)$row['Query_ID']] = $row;
+			}
 		}
 	}
 

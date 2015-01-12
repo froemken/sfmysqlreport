@@ -17,6 +17,12 @@ return array(
 				'type' => 'passthrough',
 			),
 		),
+		'mode' => array(
+			'exclude' => 0,
+			'config' => array(
+				'type' => 'passthrough',
+			),
+		),
 		'duration' => array(
 			'exclude' => 0,
 			'config' => array(

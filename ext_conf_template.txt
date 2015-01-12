@@ -1,0 +1,4 @@
+# cat=profiling/enable; type=boolean; label=Enable profiling for frontend
+profileFrontend = 0
+# cat=profiling/enable; type=boolean; label=Enable profiling for backend
+profileBackend = 0
