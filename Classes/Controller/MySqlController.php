@@ -62,12 +62,17 @@ class MySqlController extends ActionController {
 		$this->variablesRepository = $variablesRepository;
 	}
 
+	public function indexAction() {
+		$this->view->assign('status', $this->statusRepository->findAll());
+		$this->view->assign('variables', $this->variablesRepository->findAll());
+	}
+
 	/**
-	 * status action
+	 * profiling action
 	 *
 	 * @return void
 	 */
-	public function statusAction() {
+	public function profilingAction() {
 		$profiles = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'crdate, query_type, SUM(duration) as summed_duration',
 			'tx_sfmysqlreport_domain_model_profile',
