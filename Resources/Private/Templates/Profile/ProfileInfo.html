@@ -1,0 +1,19 @@
+<f:layout name="Default" />
+
+<f:section name="content">
+	<f:link.action action="queryType" controller="Profile" class="btn btn-primary" arguments="{uniqueIdentifier: uniqueIdentifier, queryType: queryType}">Back</f:link.action>
+	<table class="table">
+		<thead>
+			<th>Status</th>
+			<th>Duration</th>
+		</thead>
+		<tbody>
+			<f:for each="{profiling.profile}" as="status">
+				<tr>
+					<td>{status.Status}</td>
+					<td>{status.Duration}</td>
+				</tr>
+			</f:for>
+		</tbody>
+	</table>
+</f:section>

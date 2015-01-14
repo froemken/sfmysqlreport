@@ -23,6 +23,12 @@ return array(
 				'type' => 'passthrough',
 			),
 		),
+		'unique_call_identifier' => array(
+			'exclude' => 0,
+			'config' => array(
+				'type' => 'passthrough',
+			),
+		),
 		'duration' => array(
 			'exclude' => 0,
 			'config' => array(

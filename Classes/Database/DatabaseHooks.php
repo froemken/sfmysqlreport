@@ -57,11 +57,26 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 	 * destructor of this class
 	 */
 	public function __destruct() {
+		// A page can be called multiple times each second. So we need a unique identifier.
+		$uniqueIdentifier = uniqid('', TRUE);
+		// save tstamp of page generation
+		$crdate = (int)$GLOBALS['EXEC_TIME'];
+
+		// extend profiles array
+		foreach ($this->profiles as $key => $profile) {
+			$profile['unique_call_identifier'] = $uniqueIdentifier;
+			$profile['crdate'] = $crdate;
+			$this->profiles[$key] = $profile;
+		}
+
+		// we done want to add followinf INSERT query to profiling table
 		$this->databaseConnection->sql_query('SET profiling = 0;');
+
+		// save profilings to database
 		if (!empty($this->profiles)) {
 			$this->databaseConnection->exec_INSERTmultipleRows(
 				'tx_sfmysqlreport_domain_model_profile',
-				array('query_id', 'duration', 'query', 'query_type', 'crdate', 'profile', 'mode'),
+				array('query_id', 'duration', 'query', 'pid', 'mode', 'query_type', 'profile', 'unique_call_identifier', 'crdate'),
 				$this->profiles
 			);
 		}
@@ -81,19 +96,26 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 	 */
 	public function exec_SELECTquery_postProcessAction(&$select_fields, &$from_table, &$where_clause, &$groupBy, &$orderBy, &$limit, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject) {
 		$profiles = $this->databaseConnection->sql_query('SHOW PROFILES');
+		$uniqueIdentifier = uniqid('', TRUE);
+		$crdate = (int)$GLOBALS['EXEC_TIME'];
 		// $row: 1:Duration, 2:Query, 3:Query_ID
 		while ($row = $this->databaseConnection->sql_fetch_assoc($profiles)) {
 			if (!array_key_exists((int)$row['Query_ID'], $this->profiles)) {
+				// add page id if possible
+				$row['pid'] = is_object($GLOBALS['TSFE']) ? $GLOBALS['TSFE']->id : 0;
+				// Save mode: BE or FE
+				$row['mode'] = (string)TYPO3_MODE;
+				// Save kind of query SELECT/INSERT/DELETE...
 				$parts = GeneralUtility::trimExplode(' ', $row['Query'], TRUE, 2);
-				$row['Query_type'] = $parts[0];
-				$row['crdate'] = (int)$GLOBALS['EXEC_TIME'];
+				$row['query_type'] = $parts[0];
+				// save profiling informations of query
 				$showProfile = $this->databaseConnection->sql_query('SHOW PROFILE FOR QUERY ' . (int)$row['Query_ID']);
 				$profile = array();
 				while ($profileRow = $this->databaseConnection->sql_fetch_assoc($showProfile)) {
 					$profile[] = $profileRow;
 				}
 				$row['profile'] = serialize($profile);
-				$row['mode'] = (string)TYPO3_MODE;
+				// save collected data temporary
 				$this->profiles[(int)$row['Query_ID']] = $row;
 			}
 		}
