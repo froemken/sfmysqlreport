@@ -58,11 +58,13 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 	 */
 	public function __destruct() {
 		$this->databaseConnection->sql_query('SET profiling = 0;');
-		$this->databaseConnection->exec_INSERTmultipleRows(
-			'tx_sfmysqlreport_domain_model_profile',
-			array('query_id', 'duration', 'query', 'query_type', 'crdate', 'profile', 'mode'),
-			$this->profiles
-		);
+		if (!empty($this->profiles)) {
+			$this->databaseConnection->exec_INSERTmultipleRows(
+				'tx_sfmysqlreport_domain_model_profile',
+				array('query_id', 'duration', 'query', 'query_type', 'crdate', 'profile', 'mode'),
+				$this->profiles
+			);
+		}
 	}
 
 	/**
