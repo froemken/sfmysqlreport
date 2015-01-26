@@ -12,6 +12,7 @@ if (TYPO3_MODE == 'BE') {
 		array(
 			'MySql' => 'index, queryCache, innoDbBuffer, threadCache, tableCache, report',
 			'Profile' => 'list, show, queryType, profileInfo',
+			'Query' => 'filesort, fullTableScan',
 		),
 		array(
 			'access' => 'user,group',

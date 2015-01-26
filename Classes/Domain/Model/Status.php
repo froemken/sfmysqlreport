@@ -205,6 +205,13 @@ class Status {
 	protected $qcacheTotalBlocks = 0;
 
 	/**
+	 * slaveRunning
+	 *
+	 * @var string
+	 */
+	protected $slaveRunning = 'OFF';
+
+	/**
 	 * Threads_connected
 	 *
 	 * @var int
@@ -709,6 +716,25 @@ class Status {
 	 */
 	public function setQcacheTotalBlocks($qcacheTotalBlocks) {
 		$this->qcacheTotalBlocks = $qcacheTotalBlocks;
+	}
+
+	/**
+	 * Returns the slaveRunning
+	 *
+	 * @return string $slaveRunning
+	 */
+	public function getSlaveRunning() {
+		return $this->slaveRunning;
+	}
+
+	/**
+	 * Sets the slaveRunning
+	 *
+	 * @param string $slaveRunning
+	 * @return void
+	 */
+	public function setSlaveRunning($slaveRunning) {
+		$this->slaveRunning = $slaveRunning;
 	}
 
 	/**

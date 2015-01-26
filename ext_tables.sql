@@ -13,9 +13,12 @@ CREATE TABLE tx_sfmysqlreport_domain_model_profile (
 	query tinyblob NOT NULL,
 	query_type varchar(20) DEFAULT '' NOT NULL,
 	profile text NOT NULL,
+	explain_query text NOT NULL,
+	not_using_index tinyint(1) DEFAULT '0' NOT NULL,
+	using_fulltable tinyint(1) DEFAULT '0' NOT NULL,
 
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,
 
 	PRIMARY KEY (uid),
-	KEY profiles (crdate,query_type,duration),
+	KEY profileCalls (unique_call_identifier,crdate,mode,duration),
 );

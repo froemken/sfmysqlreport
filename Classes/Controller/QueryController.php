@@ -30,7 +30,7 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
  * @package sfmysqlreport
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
-class ProfileController extends ActionController {
+class QueryController extends ActionController {
 
 	/**
 	 * @var \StefanFroemken\Sfmysqlreport\Domain\Repository\DatabaseRepository
@@ -48,52 +48,21 @@ class ProfileController extends ActionController {
 	}
 
 	/**
-	 * list action
+	 * filesort action
 	 *
 	 * @return void
 	 */
-	public function listAction() {
-		$this->view->assign('profiles', $this->databaseRepository->findProfilingsForCall());
+	public function filesortAction() {
+		$this->view->assign('queries', $this->databaseRepository->findQueriesWithFilesort());
 	}
 
 	/**
-	 * show action
+	 * using full table scan action
 	 *
-	 * @param string $uniqueIdentifier
 	 * @return void
 	 */
-	public function showAction($uniqueIdentifier) {
-		$this->view->assign('profileTypes', $this->databaseRepository->getProfilingByUniqueIdentifier($uniqueIdentifier));
-	}
-
-	/**
-	 * query type action
-	 *
-	 * @param string $uniqueIdentifier
-	 * @param string $queryType
-	 * @return void
-	 */
-	public function queryTypeAction($uniqueIdentifier, $queryType) {
-		$this->view->assign('uniqueIdentifier', $uniqueIdentifier);
-		$this->view->assign('queryType', $queryType);
-		$this->view->assign('profilings', $this->databaseRepository->getProfilingsByQueryType($uniqueIdentifier, $queryType));
-	}
-
-	/**
-	 * profileInfo action
-	 *
-	 * @param string $uniqueIdentifier
-	 * @param string $queryType
-	 * @param integer $uid
-	 * @return void
-	 */
-	public function profileInfoAction($uniqueIdentifier, $queryType, $uid) {
-		$this->view->assign('uniqueIdentifier', $uniqueIdentifier);
-		$this->view->assign('queryType', $queryType);
-		$profiling = $this->databaseRepository->getProfilingByUid($uid);
-		$profiling['profile'] = unserialize($profiling['profile']);
-		$profiling['explain'] = unserialize($profiling['explain_query']);
-		$this->view->assign('profiling', $profiling);
+	public function fullTableScanAction() {
+		$this->view->assign('queries', $this->databaseRepository->findQueriesWithFullTableScan());
 	}
 
 }

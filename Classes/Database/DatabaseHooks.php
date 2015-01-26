@@ -40,6 +40,11 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 	protected $databaseConnection = NULL;
 
 	/**
+	 * @var array
+	 */
+	protected $extConf = array();
+
+	/**
 	 * save profiles
 	 *
 	 * @var array
@@ -51,13 +56,17 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 	 */
 	public function __construct() {
 		$this->databaseConnection = $GLOBALS['TYPO3_DB'];
+		$this->extConf = is_array($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['sfmysqlreport']) ?: unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['sfmysqlreport']);
 	}
 
 	/**
 	 * destructor of this class
 	 */
 	public function __destruct() {
-		// A page can be called multiple times each second. So we need a unique identifier.
+		// we done want to add additional queries to profiling table
+		$this->databaseConnection->sql_query('SET profiling = 0;');
+
+		// A page can be called multiple times each second. So we need an unique identifier.
 		$uniqueIdentifier = uniqid('', TRUE);
 		// save tstamp of page generation
 		$crdate = (int)$GLOBALS['EXEC_TIME'];
@@ -66,20 +75,54 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 		foreach ($this->profiles as $key => $profile) {
 			$profile['unique_call_identifier'] = $uniqueIdentifier;
 			$profile['crdate'] = $crdate;
+
+			// save explain information of query if activated
+			if ($this->extConf['addExplain']) {
+				$this->addExplain($profile);
+			} else {
+				$profile['explain_query'] = serialize(array());
+			}
+
 			$this->profiles[$key] = $profile;
 		}
-
-		// we done want to add followinf INSERT query to profiling table
-		$this->databaseConnection->sql_query('SET profiling = 0;');
 
 		// save profilings to database
 		if (!empty($this->profiles)) {
 			$this->databaseConnection->exec_INSERTmultipleRows(
 				'tx_sfmysqlreport_domain_model_profile',
-				array('query_id', 'duration', 'query', 'pid', 'mode', 'query_type', 'profile', 'unique_call_identifier', 'crdate'),
+				array('query_id', 'duration', 'query', 'pid', 'mode', 'query_type', 'profile', 'unique_call_identifier', 'crdate', 'explain_query', 'not_using_index', 'using_fulltable'),
 				$this->profiles
 			);
 		}
+	}
+
+	/**
+	 * add result of EXPLAIN to profiling
+	 *
+	 * @param array $profile
+	 */
+	protected function addExplain(&$profile) {
+		$explain = array();
+		$notUsingIndex = FALSE;
+		$usingFullTable = FALSE;
+		// EXPLAIN only works for SELECT and INSERT statements
+		// EXPLAIN does not work if we have PreparedStatements (Statements with ?)
+		// Saved Statement of profiling only consists of the first 256 letters
+		if ($profile['query_type'] === 'SELECT' && strpos($profile['Query'], '?') === FALSE && strlen($profile['Query']) < 255) {
+			$showExplain = $this->databaseConnection->sql_query('EXPLAIN ' . $profile['Query']);
+			while ($explainRow = $this->databaseConnection->sql_fetch_assoc($showExplain)) {
+				if ($notUsingIndex === FALSE && empty($explainRow['key'])) {
+					$notUsingIndex = TRUE;
+				}
+				if ($usingFullTable === FALSE && strtolower($explainRow['select_type']) === 'all') {
+					$usingFullTable = TRUE;
+				}
+				$explain[] = $explainRow;
+			}
+		}
+		$profile['explain_query'] = serialize($explain);
+		$profile['not_using_index'] = (int)$notUsingIndex;
+		$profile['using_fulltable'] = (int)$usingFullTable;
 	}
 
 	/**
@@ -96,8 +139,6 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 	 */
 	public function exec_SELECTquery_postProcessAction(&$select_fields, &$from_table, &$where_clause, &$groupBy, &$orderBy, &$limit, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject) {
 		$profiles = $this->databaseConnection->sql_query('SHOW PROFILES');
-		$uniqueIdentifier = uniqid('', TRUE);
-		$crdate = (int)$GLOBALS['EXEC_TIME'];
 		// $row: 1:Duration, 2:Query, 3:Query_ID
 		while ($row = $this->databaseConnection->sql_fetch_assoc($profiles)) {
 			if (!array_key_exists((int)$row['Query_ID'], $this->profiles)) {
@@ -108,7 +149,7 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 				// Save kind of query SELECT/INSERT/DELETE...
 				$parts = GeneralUtility::trimExplode(' ', $row['Query'], TRUE, 2);
 				$row['query_type'] = $parts[0];
-				// save profiling informations of query
+				// save profiling information of query
 				$showProfile = $this->databaseConnection->sql_query('SHOW PROFILE FOR QUERY ' . (int)$row['Query_ID']);
 				$profile = array();
 				while ($profileRow = $this->databaseConnection->sql_fetch_assoc($showProfile)) {

@@ -35,9 +35,9 @@ class DatabaseRepository extends AbstractRepository {
 	 *
 	 * @return array
 	 */
-	public function findGroupedProfilings() {
+	public function findProfilingsForCall() {
 		return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-			'crdate, unique_call_identifier, mode, SUM(duration) as duration',
+			'crdate, unique_call_identifier, mode, request, SUM(duration) as duration',
 			'tx_sfmysqlreport_domain_model_profile',
 			'',
 			'unique_call_identifier', 'crdate DESC', 100
@@ -68,7 +68,7 @@ class DatabaseRepository extends AbstractRepository {
 	 */
 	public function getProfilingsByQueryType($uniqueIdentifier, $queryType) {
 		return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-			'uid, LEFT(query, 120) as query, duration',
+			'uid, LEFT(query, 120) as query, not_using_index, duration',
 			'tx_sfmysqlreport_domain_model_profile',
 			'unique_call_identifier = "' . $uniqueIdentifier . '"
 			AND query_type = "' . $queryType . '"',
@@ -84,10 +84,38 @@ class DatabaseRepository extends AbstractRepository {
 	 */
 	public function getProfilingByUid($uid) {
 		return $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-			'LEFT(query, 300) as query, query_type, profile, duration',
+			'LEFT(query, 255) as query, query_type, profile, explain_query, not_using_index, duration',
 			'tx_sfmysqlreport_domain_model_profile',
 			'uid = ' . $uid,
 			'', '', ''
+		);
+	}
+
+	/**
+	 * find queries using filesort
+	 *
+	 * @return array
+	 */
+	public function findQueriesWithFilesort() {
+		return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'LEFT(query, 255) as query, explain_query, duration',
+			'tx_sfmysqlreport_domain_model_profile',
+			'explain_query LIKE "%using filesort%"',
+			'', 'duration DESC', '100'
+		);
+	}
+
+	/**
+	 * find queries using full table scan
+	 *
+	 * @return array
+	 */
+	public function findQueriesWithFullTableScan() {
+		return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'LEFT(query, 255) as query, explain_query, duration',
+			'tx_sfmysqlreport_domain_model_profile',
+			'using_fulltable = 1',
+			'', 'duration DESC', '100'
 		);
 	}
 

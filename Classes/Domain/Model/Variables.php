@@ -30,6 +30,13 @@ namespace StefanFroemken\Sfmysqlreport\Domain\Model;
 class Variables {
 
 	/**
+	 * back_log
+	 *
+	 * @var int
+	 */
+	protected $backLog = 0;
+
+	/**
 	 * innodb_log_buffer_size
 	 *
 	 * @var int
@@ -70,6 +77,13 @@ class Variables {
 	 * @var int
 	 */
 	protected $keyCacheBlockSize = 0;
+
+	/**
+	 * log_bin
+	 *
+	 * @var string
+	 */
+	protected $logBin = 'OFF';
 
 	/**
 	 * max_heap_table_size
@@ -121,6 +135,13 @@ class Variables {
 	protected $queryCacheWlockInvalidate = FALSE;
 
 	/**
+	 * sync_binlog
+	 *
+	 * @var bool
+	 */
+	protected $syncBinlog = FALSE;
+
+	/**
 	 * table_definition_cache
 	 *
 	 * @var int
@@ -151,6 +172,25 @@ class Variables {
 
 
 
+
+	/**
+	 * Returns the backLog
+	 *
+	 * @return int $backLog
+	 */
+	public function getBackLog() {
+		return $this->backLog;
+	}
+
+	/**
+	 * Sets the backLog
+	 *
+	 * @param int $backLog
+	 * @return void
+	 */
+	public function setBackLog($backLog) {
+		$this->backLog = $backLog;
+	}
 
 	/**
 	 * Getter for innodb_log_buffer_size
@@ -264,6 +304,25 @@ class Variables {
 	 */
 	public function setKeyCacheBlockSize($keyCacheBlockSize) {
 		$this->keyCacheBlockSize = $keyCacheBlockSize;
+	}
+
+	/**
+	 * Returns the logBin
+	 *
+	 * @return string $logBin
+	 */
+	public function getLogBin() {
+		return $this->logBin;
+	}
+
+	/**
+	 * Sets the logBin
+	 *
+	 * @param string $logBin
+	 * @return void
+	 */
+	public function setLogBin($logBin) {
+		$this->logBin = $logBin;
 	}
 
 	/**
@@ -408,6 +467,29 @@ class Variables {
 			$this->queryCacheWlockInvalidate = TRUE;
 		} else {
 			$this->queryCacheWlockInvalidate = FALSE;
+		}
+	}
+
+	/**
+	 * Returns the syncBinlog
+	 *
+	 * @return bool $syncBinlog
+	 */
+	public function getSyncBinlog() {
+		return $this->syncBinlog;
+	}
+
+	/**
+	 * Sets the syncBinlog
+	 *
+	 * @param bool $syncBinlog
+	 * @return void
+	 */
+	public function setSyncBinlog($syncBinlog) {
+		if ($syncBinlog || strtolower($syncBinlog) === 'on') {
+			$this->syncBinlog = TRUE;
+		} else {
+			$this->syncBinlog = FALSE;
 		}
 	}
 

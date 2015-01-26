@@ -3,7 +3,6 @@ return array(
 	'ctrl' => array(
 		'title'	=> 'Profile',
 		'label' => 'uid',
-		'tstamp' => 'tstamp',
 		'crdate' => 'crdate',
 		'hideTable' => TRUE,
 	),

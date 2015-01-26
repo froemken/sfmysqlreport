@@ -5,12 +5,14 @@
 	<table class="table">
 		<thead>
 			<th>Query type</th>
+			<th>Not using index</th>
 			<th>Duration</th>
 		</thead>
 		<tbody>
 			<f:for each="{profilings}" as="profile">
 				<tr>
 					<td>{profile.query}...</td>
+					<td>{profile.not_using_index}</td>
 					<td><f:link.action action="profileInfo" arguments="{uniqueIdentifier: uniqueIdentifier, queryType: queryType, uid: profile.uid}">{profile.duration}</f:link.action></td>
 				</tr>
 			</f:for>
