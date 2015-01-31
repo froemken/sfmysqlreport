@@ -81,6 +81,8 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 				$this->addExplain($profile);
 			} else {
 				$profile['explain_query'] = serialize(array());
+				$profile['not_using_index'] = 0;
+				$profile['using_fulltable'] = 0;
 			}
 
 			$this->profiles[$key] = $profile;
