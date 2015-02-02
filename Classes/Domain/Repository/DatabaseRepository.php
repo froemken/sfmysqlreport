@@ -37,7 +37,7 @@ class DatabaseRepository extends AbstractRepository {
 	 */
 	public function findProfilingsForCall() {
 		return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-			'crdate, unique_call_identifier, mode, request, SUM(duration) as duration',
+			'crdate, unique_call_identifier, mode, SUM(duration) as duration',
 			'tx_sfmysqlreport_domain_model_profile',
 			'',
 			'unique_call_identifier', 'crdate DESC', 100
