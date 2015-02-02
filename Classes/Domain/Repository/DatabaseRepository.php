@@ -36,7 +36,7 @@ class DatabaseRepository extends AbstractRepository {
 	 * @return array
 	 */
 	public function findProfilingsForCall() {
-		return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+		return $this->databaseConnection->exec_SELECTgetRows(
 			'crdate, unique_call_identifier, mode, SUM(duration) as duration',
 			'tx_sfmysqlreport_domain_model_profile',
 			'',
@@ -51,7 +51,7 @@ class DatabaseRepository extends AbstractRepository {
 	 * @return array
 	 */
 	public function getProfilingByUniqueIdentifier($uniqueIdentifier) {
-		return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+		return $this->databaseConnection->exec_SELECTgetRows(
 			'query_type, unique_call_identifier, SUM(duration) as duration',
 			'tx_sfmysqlreport_domain_model_profile',
 			'unique_call_identifier = "' . $uniqueIdentifier . '"',
@@ -67,8 +67,8 @@ class DatabaseRepository extends AbstractRepository {
 	 * @return array
 	 */
 	public function getProfilingsByQueryType($uniqueIdentifier, $queryType) {
-		return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-			'uid, LEFT(query, 120) as query, not_using_index, duration',
+		return $this->databaseConnection->exec_SELECTgetRows(
+			'uid, query_id, LEFT(query, 120) as query, not_using_index, duration',
 			'tx_sfmysqlreport_domain_model_profile',
 			'unique_call_identifier = "' . $uniqueIdentifier . '"
 			AND query_type = "' . $queryType . '"',
@@ -83,8 +83,8 @@ class DatabaseRepository extends AbstractRepository {
 	 * @return array
 	 */
 	public function getProfilingByUid($uid) {
-		return $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
-			'LEFT(query, 255) as query, query_type, profile, explain_query, not_using_index, duration',
+		return $this->databaseConnection->exec_SELECTgetSingleRow(
+			'query, query_type, profile, explain_query, not_using_index, duration',
 			'tx_sfmysqlreport_domain_model_profile',
 			'uid = ' . $uid,
 			'', '', ''
@@ -97,7 +97,7 @@ class DatabaseRepository extends AbstractRepository {
 	 * @return array
 	 */
 	public function findQueriesWithFilesort() {
-		return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+		return $this->databaseConnection->exec_SELECTgetRows(
 			'LEFT(query, 255) as query, explain_query, duration',
 			'tx_sfmysqlreport_domain_model_profile',
 			'explain_query LIKE "%using filesort%"',
@@ -111,7 +111,7 @@ class DatabaseRepository extends AbstractRepository {
 	 * @return array
 	 */
 	public function findQueriesWithFullTableScan() {
-		return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+		return $this->databaseConnection->exec_SELECTgetRows(
 			'LEFT(query, 255) as query, explain_query, duration',
 			'tx_sfmysqlreport_domain_model_profile',
 			'using_fulltable = 1',

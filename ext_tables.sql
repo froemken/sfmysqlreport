@@ -10,7 +10,7 @@ CREATE TABLE tx_sfmysqlreport_domain_model_profile (
 	mode char(3) DEFAULT '' NOT NULL,
 	unique_call_identifier varchar(15) DEFAULT '' NOT NULL,
 	duration double(11,8) DEFAULT '0.00000000' NOT NULL,
-	query tinyblob NOT NULL,
+	query blob NOT NULL,
 	query_type varchar(20) DEFAULT '' NOT NULL,
 	profile text NOT NULL,
 	explain_query text NOT NULL,

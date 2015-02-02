@@ -11,8 +11,10 @@
 	<h1>Profile output</h1>
 	<table class="table">
 		<thead>
-			<th>Status</th>
-			<th>Duration</th>
+			<tr>
+				<th>Status</th>
+				<th>Duration</th>
+			</tr>
 		</thead>
 		<tbody>
 			<f:for each="{profiling.profile}" as="status">
@@ -23,17 +25,19 @@
 			</f:for>
 		</tbody>
 	</table>
-	<h1>Explain output</h1>
-	<f:for each="{profiling.explain}" as="explain">
-		<table class="table">
-			<tbody>
+	<f:if condition="{profiling.explain->f:count()}">
+		<h1>Explain output</h1>
+		<f:for each="{profiling.explain}" as="explain">
+			<table class="table">
+				<tbody>
 				<f:for each="{explain}" as="value" key="key">
 					<tr>
 						<td>{key}</td>
 						<td>{value}</td>
 					</tr>
 				</f:for>
-			</tbody>
-		</table>
-	</f:for>
+				</tbody>
+			</table>
+		</f:for>
+	</f:if>
 </f:section>

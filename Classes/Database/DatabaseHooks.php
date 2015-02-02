@@ -68,22 +68,17 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 
 		// A page can be called multiple times each second. So we need an unique identifier.
 		$uniqueIdentifier = uniqid('', TRUE);
-		// save tstamp of page generation
 		$crdate = (int)$GLOBALS['EXEC_TIME'];
+		$pid = is_object($GLOBALS['TSFE']) ? $GLOBALS['TSFE']->id : 0;
+		$mode = (string)TYPO3_MODE;
 
 		// extend profiles array
 		foreach ($this->profiles as $key => $profile) {
+			$profile['pid'] = $pid;
+			$profile['mode'] = $mode;
 			$profile['unique_call_identifier'] = $uniqueIdentifier;
 			$profile['crdate'] = $crdate;
-
-			// save explain information of query if activated
-			if ($this->extConf['addExplain']) {
-				$this->addExplain($profile);
-			} else {
-				$profile['explain_query'] = serialize(array());
-				$profile['not_using_index'] = 0;
-				$profile['using_fulltable'] = 0;
-			}
+			$profile['query_id'] = $key;
 
 			$this->profiles[$key] = $profile;
 		}
@@ -92,40 +87,13 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 		if (!empty($this->profiles)) {
 			$this->databaseConnection->exec_INSERTmultipleRows(
 				'tx_sfmysqlreport_domain_model_profile',
-				array('query_id', 'duration', 'query', 'pid', 'mode', 'query_type', 'profile', 'unique_call_identifier', 'crdate', 'explain_query', 'not_using_index', 'using_fulltable'),
+				array('query_type', 'duration', 'profile', 'query', 'explain_query', 'not_using_index', 'using_fulltable', 'pid', 'mode', 'unique_call_identifier', 'crdate', 'query_id'),
 				$this->profiles
 			);
 		}
 	}
 
-	/**
-	 * add result of EXPLAIN to profiling
-	 *
-	 * @param array $profile
-	 */
-	protected function addExplain(&$profile) {
-		$explain = array();
-		$notUsingIndex = FALSE;
-		$usingFullTable = FALSE;
-		// EXPLAIN only works for SELECT and INSERT statements
-		// EXPLAIN does not work if we have PreparedStatements (Statements with ?)
-		// Saved Statement of profiling only consists of the first 256 letters
-		if ($profile['query_type'] === 'SELECT' && strpos($profile['Query'], '?') === FALSE && strlen($profile['Query']) < 255) {
-			$showExplain = $this->databaseConnection->sql_query('EXPLAIN ' . $profile['Query']);
-			while ($explainRow = $this->databaseConnection->sql_fetch_assoc($showExplain)) {
-				if ($notUsingIndex === FALSE && empty($explainRow['key'])) {
-					$notUsingIndex = TRUE;
-				}
-				if ($usingFullTable === FALSE && strtolower($explainRow['select_type']) === 'all') {
-					$usingFullTable = TRUE;
-				}
-				$explain[] = $explainRow;
-			}
-		}
-		$profile['explain_query'] = serialize($explain);
-		$profile['not_using_index'] = (int)$notUsingIndex;
-		$profile['using_fulltable'] = (int)$usingFullTable;
-	}
+
 
 	/**
 	 * Post-processor for the SELECTquery method.
@@ -140,29 +108,23 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 	 * @return void
 	 */
 	public function exec_SELECTquery_postProcessAction(&$select_fields, &$from_table, &$where_clause, &$groupBy, &$orderBy, &$limit, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject) {
-		$profiles = $this->databaseConnection->sql_query('SHOW PROFILES');
-		// $row: 1:Duration, 2:Query, 3:Query_ID
-		while ($row = $this->databaseConnection->sql_fetch_assoc($profiles)) {
-			if (!array_key_exists((int)$row['Query_ID'], $this->profiles)) {
-				// add page id if possible
-				$row['pid'] = is_object($GLOBALS['TSFE']) ? $GLOBALS['TSFE']->id : 0;
-				// Save mode: BE or FE
-				$row['mode'] = (string)TYPO3_MODE;
-				// Save kind of query SELECT/INSERT/DELETE...
-				$parts = GeneralUtility::trimExplode(' ', $row['Query'], TRUE, 2);
-				$row['query_type'] = $parts[0];
-				// save profiling information of query
-				$showProfile = $this->databaseConnection->sql_query('SHOW PROFILE FOR QUERY ' . (int)$row['Query_ID']);
-				$profile = array();
-				while ($profileRow = $this->databaseConnection->sql_fetch_assoc($showProfile)) {
-					$profile[] = $profileRow;
-				}
-				$row['profile'] = serialize($profile);
-				// save collected data temporary
-				$this->profiles[(int)$row['Query_ID']] = $row;
-			}
+		// don't log profiles of this extension
+		if (strpos($from_table, 'tx_sfmysqlreport_domain_model_profile') === FALSE) {
+			$row = array();
+			// Save kind of query
+			$row['query_type'] = 'SELECT';
+			// save profiling information
+			$this->addProfilingInformation($row);
+			// build full query
+			$row['query'] = $this->databaseConnection->SELECTquery($select_fields, $from_table, $where_clause, $groupBy, $orderBy, $limit);
+			// save explain information
+			$this->addExplainInformation($row);
+
+			// save collected data temporary
+			$this->profiles[] = $row;
 		}
 	}
+
 
 	/**
 	 * Post-processor for the exec_INSERTquery method.
@@ -174,7 +136,21 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 	 * @return void
 	 */
 	public function exec_INSERTquery_postProcessAction(&$table, array &$fieldsValues, &$noQuoteFields, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject) {
+		// don't log profiles of this extension
+		if (strpos($table, 'tx_sfmysqlreport_domain_model_profile') === FALSE) {
+			$row = array();
+			// Save kind of query
+			$row['query_type'] = 'INSERT';
+			// save profiling information
+			$this->addProfilingInformation($row);
+			// build full query
+			$row['query'] = $this->databaseConnection->INSERTquery($table, $fieldsValues, $noQuoteFields);
+			// save explain information
+			$this->addExplainInformation($row);
 
+			// save collected data temporary
+			$this->profiles[] = $row;
+		}
 	}
 
 	/**
@@ -188,7 +164,21 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 	 * @return void
 	 */
 	public function exec_INSERTmultipleRows_postProcessAction(&$table, array &$fields, array &$rows, &$noQuoteFields, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject) {
+		// don't log profiles of this extension
+		if (strpos($table, 'tx_sfmysqlreport_domain_model_profile') === FALSE) {
+			$row = array();
+			// Save kind of query
+			$row['query_type'] = 'INSERT';
+			// save profiling information
+			$this->addProfilingInformation($row);
+			// build full query
+			$row['query'] = $this->databaseConnection->INSERTquery($table, $fields, $rows, $noQuoteFields);
+			// save explain information
+			$this->addExplainInformation($row);
 
+			// save collected data temporary
+			$this->profiles[] = $row;
+		}
 	}
 
 	/**
@@ -202,7 +192,21 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 	 * @return void
 	 */
 	public function exec_UPDATEquery_postProcessAction(&$table, &$where, array &$fieldsValues, &$noQuoteFields, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject) {
+		// don't log profiles of this extension
+		if (strpos($table, 'tx_sfmysqlreport_domain_model_profile') === FALSE) {
+			$row = array();
+			// Save kind of query
+			$row['query_type'] = 'UPDATE';
+			// save profiling information
+			$this->addProfilingInformation($row);
+			// build full query
+			$row['query'] = $this->databaseConnection->UPDATEquery($table, $where, $fieldsValues, $noQuoteFields);
+			// save explain information
+			$this->addExplainInformation($row);
 
+			// save collected data temporary
+			$this->profiles[] = $row;
+		}
 	}
 
 	/**
@@ -214,7 +218,21 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 	 * @return void
 	 */
 	public function exec_DELETEquery_postProcessAction(&$table, &$where, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject) {
+		// don't log profiles of this extension
+		if (strpos($table, 'tx_sfmysqlreport_domain_model_profile') === FALSE) {
+			$row = array();
+			// Save kind of query
+			$row['query_type'] = 'DELETE';
+			// save profiling information
+			$this->addProfilingInformation($row);
+			// build full query
+			$row['query'] = $this->databaseConnection->DELETEquery($table, $where);
+			// save explain information
+			$this->addExplainInformation($row);
 
+			// save collected data temporary
+			$this->profiles[] = $row;
+		}
 	}
 
 	/**
@@ -225,7 +243,77 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 	 * @return void
 	 */
 	public function exec_TRUNCATEquery_postProcessAction(&$table, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject) {
+		// don't log profiles of this extension
+		if (strpos($table, 'tx_sfmysqlreport_domain_model_profile') === FALSE) {
+			$row = array();
+			// Save kind of query
+			$row['query_type'] = 'TRUNCATE';
+			// save profiling information
+			$this->addProfilingInformation($row);
+			// build full query
+			$row['query'] = $this->databaseConnection->TRUNCATEquery($table);
+			// save explain information
+			$this->addExplainInformation($row);
 
+			// save collected data temporary
+			$this->profiles[] = $row;
+		}
+	}
+
+	/**
+	 * Add profiling information
+	 *
+	 * @param array $row
+	 * @return void
+	 */
+	protected function addProfilingInformation(array &$row) {
+		$profile = array();
+		$duration = 0;
+		$mysqlResult = $this->databaseConnection->sql_query('SHOW PROFILE');
+		while ($profileRow = $this->databaseConnection->sql_fetch_assoc($mysqlResult)) {
+			$duration += $profileRow['Duration'];
+			$profile[] = $profileRow;
+		}
+		$row['duration'] = $duration;
+		$row['profile'] = serialize($profile);
+	}
+
+	/**
+	 * add result of EXPLAIN to profiling
+	 *
+	 * @param array $row
+	 * @return void
+	 */
+	protected function addExplainInformation(&$row) {
+		$row['explain_query'] = serialize(array());
+		$row['not_using_index'] = 0;
+		$row['using_fulltable'] = 0;
+
+		// save explain information of query if activated
+		// EXPLAIN with other types than SELECT works since MySQL 5.6.3 only
+		// EXPLAIN does not work, if we have PreparedStatements (Statements with ?)
+		if (
+			$this->extConf['addExplain'] &&
+			$row['query_type'] === 'SELECT' &&
+			strpos($row['query'], '?') === FALSE
+		) {
+			$explain = array();
+			$notUsingIndex = FALSE;
+			$usingFullTable = FALSE;
+			$showExplain = $this->databaseConnection->sql_query('EXPLAIN ' . $row['query']);
+			while ($explainRow = $this->databaseConnection->sql_fetch_assoc($showExplain)) {
+				if ($notUsingIndex === FALSE && empty($explainRow['key'])) {
+					$notUsingIndex = TRUE;
+				}
+				if ($usingFullTable === FALSE && strtolower($explainRow['select_type']) === 'all') {
+					$usingFullTable = TRUE;
+				}
+				$explain[] = $explainRow;
+			}
+			$row['explain_query'] = serialize($explain);
+			$row['not_using_index'] = (int)$notUsingIndex;
+			$row['using_fulltable'] = (int)$usingFullTable;
+		}
 	}
 
 }
