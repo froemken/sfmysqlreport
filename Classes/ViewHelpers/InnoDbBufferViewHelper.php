@@ -169,10 +169,10 @@ class InnoDbBufferViewHelper extends AbstractViewHelper {
 		$bytesWrittenEachHour = $bytesWrittenEachSecond * 60 * 60;
 		$sizeOfEachLogFile = (int)($bytesWrittenEachHour / $variables->getInnodbLogFilesInGroup());
 
-		if ($sizeOfEachLogFile < $variables->getInnodbLogFileSize() && $sizeOfEachLogFile > 5242880) {
-			$result['status'] = 'danger';
-		} else {
+		if ($sizeOfEachLogFile < 5242880 || $sizeOfEachLogFile < $variables->getInnodbLogFileSize()) {
 			$result['status'] = 'success';
+		} else {
+			$result['status'] = 'danger';
 		}
 		$result['value'] = $variables->getInnodbLogFileSize();
 		$result['niceToHave'] = $sizeOfEachLogFile;

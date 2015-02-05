@@ -56,8 +56,9 @@
 			<h3 class="panel-title">Log File Size</h3>
 		</div>
 		<div class="panel-body">
-			<p>Your current log file size is {logFile.value}.</p>
+			<p>Your current log file size is {logFile.value} Bytes.</p>
 			<p>A good value for your log files would be a little bit higher than: {logFile.niceToHave} Bytes.</p>
+			<p>Please call this test only on high peak of your server.</p>
 			<p>
 				Be careful: When changing this value you have to cleanly shutdown your MySQL, backup and remove the
 				ib_logfile*-files from data-directory. Start your server. If there are no errors you can safely delete your
