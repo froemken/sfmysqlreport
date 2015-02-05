@@ -189,7 +189,7 @@ class InnoDbBufferViewHelper extends AbstractViewHelper {
 	protected function getInstances(Variables $variables) {
 		$result = array();
 		$innodbBufferShouldBe = $variables->getInnodbBufferPoolInstances() * (1 * 1024 * 1024 * 1024); // Instances * 1 GB
-		if ($variables->getInnodbBufferPoolSize() < (1 * 1024 * 1024 * 1024)) {
+		if ($variables->getInnodbBufferPoolSize() < (1 * 1024 * 1024 * 1024) && $variables->getInnodbBufferPoolInstances() === 1) {
 			$result['status'] = 'success';
 		}	elseif ($innodbBufferShouldBe !== $variables->getInnodbBufferPoolSize()) {
 				$result['status'] = 'danger';
