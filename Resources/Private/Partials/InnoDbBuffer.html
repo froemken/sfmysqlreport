@@ -51,6 +51,32 @@
 		</div>
 	</div>
 
+	<div class="panel panel-{logFile.status}">
+		<div class="panel-heading">
+			<h3 class="panel-title">Log File Size</h3>
+		</div>
+		<div class="panel-body">
+			<p>Your current log file size is {logFile.value}.</p>
+			<p>A good value for your log files would be a little bit higher than: {logFile.niceToHave} Bytes.</p>
+			<p>
+				Be careful: When changing this value you have to cleanly shutdown your MySQL, backup and remove the
+				ib_logfile*-files from data-directory. Start your server. If there are no errors you can safely delete your
+				backed up ib_logfile*-files.
+			</p>
+		</div>
+	</div>
+
+	<div class="panel panel-{instances.status}">
+		<div class="panel-heading">
+			<h3 class="panel-title">Instances Check</h3>
+		</div>
+		<div class="panel-body">
+			<p>Each Instance should be allocated to 1GB.</p>
+			<p>You just have defined {instances.value} Instances. This would enough to allocate {instances.value} GB</p>
+			<p>If your innodb_buffer_pool_size is less than 1GB, 1 Instance is OK.</p>
+		</div>
+	</div>
+
 	<div class="panel panel-{writeRatio.status}">
 		<div class="panel-heading">
 			<h3 class="panel-title">Write Ratio</h3>

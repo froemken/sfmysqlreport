@@ -47,11 +47,15 @@ class InnoDbBufferViewHelper extends AbstractViewHelper {
 		$this->templateVariableContainer->add('hitRatioBySF', $this->getHitRatioBySF($status));
 		$this->templateVariableContainer->add('writeRatio', $this->getWriteRatio($status));
 		$this->templateVariableContainer->add('load', $this->getLoad($status));
+		$this->templateVariableContainer->add('logFile', $this->getLogFileSize($status, $variables));
+		$this->templateVariableContainer->add('instances', $this->getInstances($variables));
 		$content = $this->renderChildren();
 		$this->templateVariableContainer->remove('hitRatio');
 		$this->templateVariableContainer->remove('hitRatioBySF');
 		$this->templateVariableContainer->remove('writeRatio');
 		$this->templateVariableContainer->remove('load');
+		$this->templateVariableContainer->remove('logFile');
+		$this->templateVariableContainer->remove('instances');
 		return $content;
 	}
 
@@ -59,7 +63,7 @@ class InnoDbBufferViewHelper extends AbstractViewHelper {
 	 * get hit ratio of innoDb Buffer
 	 * A ratio of 99.9 equals 1/1000
 	 *
-	 * @param Status $status
+	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
 	 * @return array
 	 */
 	protected function getHitRatio(Status $status) {
@@ -79,7 +83,7 @@ class InnoDbBufferViewHelper extends AbstractViewHelper {
 	/**
 	 * get hit ratio of innoDb Buffer by SF
 	 *
-	 * @param Status $status
+	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
 	 * @return array
 	 */
 	protected function getHitRatioBySF(Status $status) {
@@ -103,7 +107,7 @@ class InnoDbBufferViewHelper extends AbstractViewHelper {
 	 * get write ratio of innoDb Buffer
 	 * A value more higher than 1 is good
 	 *
-	 * @param Status $status
+	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
 	 * @return array
 	 */
 	protected function getWriteRatio(Status $status) {
@@ -123,7 +127,7 @@ class InnoDbBufferViewHelper extends AbstractViewHelper {
 	/**
 	 * get load of InnoDB Buffer
 	 *
-	 * @param Status $status
+	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
 	 * @return array
 	 */
 	protected function getLoad(Status $status) {
@@ -147,6 +151,53 @@ class InnoDbBufferViewHelper extends AbstractViewHelper {
 		$load['freePercent'] = round(100 / $total * $free, 1);
 
 		return $load;
+	}
+
+	/**
+	 * find a good size for log files
+	 *
+	 * @link http://www.psce.com/blog/2012/04/10/what-is-the-proper-size-of-innodb-logs/
+	 *
+	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
+	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Variables $variables
+	 * @return array
+	 */
+	protected function getLogFileSize(Status $status, Variables $variables) {
+		$result = array();
+
+		$bytesWrittenEachSecond = $status->getInnodbOsLogWritten() / $status->getUptime();
+		$bytesWrittenEachHour = $bytesWrittenEachSecond * 60 * 60;
+		$sizeOfEachLogFile = (int)($bytesWrittenEachHour / $variables->getInnodbLogFilesInGroup());
+
+		if ($sizeOfEachLogFile < $variables->getInnodbLogFileSize() && $sizeOfEachLogFile > 5242880) {
+			$result['status'] = 'danger';
+		} else {
+			$result['status'] = 'success';
+		}
+		$result['value'] = $variables->getInnodbLogFileSize();
+		$result['niceToHave'] = $sizeOfEachLogFile;
+		return $result;
+
+	}
+
+	/**
+	 * check if instances are set correct
+	 *
+	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Variables $variables
+	 * @return array
+	 */
+	protected function getInstances(Variables $variables) {
+		$result = array();
+		$innodbBufferShouldBe = $variables->getInnodbBufferPoolInstances() * (1 * 1024 * 1024 * 1024); // Instances * 1 GB
+		if ($variables->getInnodbBufferPoolSize() < (1 * 1024 * 1024 * 1024)) {
+			$result['status'] = 'success';
+		}	elseif ($innodbBufferShouldBe !== $variables->getInnodbBufferPoolSize()) {
+				$result['status'] = 'danger';
+		} else {
+			$result['status'] = 'success';
+		}
+		$result['value'] = $variables->getInnodbBufferPoolInstances();
+		return $result;
 	}
 
 }

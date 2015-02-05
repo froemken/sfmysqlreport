@@ -128,6 +128,13 @@ class Status {
 	protected $innodbBufferPoolWriteRequests = 0;
 
 	/**
+	 * Innodb_os_log_written
+	 *
+	 * @var int
+	 */
+	protected $innodbOsLogWritten = 0;
+
+	/**
 	 * Innodb_page_size
 	 *
 	 * @var int
@@ -417,7 +424,12 @@ class Status {
 	 * @return int $innodbBufferPoolPagesFlushed
 	 */
 	public function getInnodbBufferPoolPagesFlushed() {
-		return $this->innodbBufferPoolPagesFlushed;
+		if ($this->innodbBufferPoolPagesFlushed) {
+			return $this->innodbBufferPoolPagesFlushed;
+		} else {
+			// prevent division by zero
+			return 1;
+		}
 	}
 
 	/**
@@ -542,6 +554,25 @@ class Status {
 	 */
 	public function setInnodbBufferPoolWriteRequests($innodbBufferPoolWriteRequests) {
 		$this->innodbBufferPoolWriteRequests = $innodbBufferPoolWriteRequests;
+	}
+
+	/**
+	 * Returns the innodbOsLogWritten
+	 *
+	 * @return int $innodbOsLogWritten
+	 */
+	public function getInnodbOsLogWritten() {
+		return $this->innodbOsLogWritten;
+	}
+
+	/**
+	 * Sets the innodbOsLogWritten
+	 *
+	 * @param int $innodbOsLogWritten
+	 * @return void
+	 */
+	public function setInnodbOsLogWritten($innodbOsLogWritten) {
+		$this->innodbOsLogWritten = $innodbOsLogWritten;
 	}
 
 	/**

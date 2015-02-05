@@ -37,11 +37,18 @@ class Variables {
 	protected $backLog = 0;
 
 	/**
-	 * innodb_log_buffer_size
+	 * innodb_buffer_pool_instances
 	 *
 	 * @var int
 	 */
-	protected $innodbLogBufferSize = 0;
+	protected $innodbBufferPoolInstances = 0;
+
+	/**
+	 * innodb_buffer_pool_size
+	 *
+	 * @var int
+	 */
+	protected $innodbBufferPoolSize = 0;
 
 	/**
 	 * innodb_flush_log_at_trx_commit
@@ -51,11 +58,25 @@ class Variables {
 	protected $innodbFlushLogAtTrxCommit = 0;
 
 	/**
-	 * innodb_buffer_pool_size
+	 * innodb_log_buffer_size
 	 *
 	 * @var int
 	 */
-	protected $innodbBufferPoolSize = 0;
+	protected $innodbLogBufferSize = 0;
+
+	/**
+	 * innodb_log_file_size
+	 *
+	 * @var int
+	 */
+	protected $innodbLogFileSize = 0;
+
+	/**
+	 * innodb_log_files_in_group
+	 *
+	 * @var int
+	 */
+	protected $innodbLogFilesInGroup = 0;
 
 	/**
 	 * join_buffer_size
@@ -193,22 +214,41 @@ class Variables {
 	}
 
 	/**
-	 * Getter for innodb_log_buffer_size
+	 * Returns the innodbBufferPoolInstances
 	 *
-	 * @return int
+	 * @return int $innodbBufferPoolInstances
 	 */
-	public function getInnodbLogBufferSize() {
-		return $this->innodbLogBufferSize;
+	public function getInnodbBufferPoolInstances() {
+		return $this->innodbBufferPoolInstances;
 	}
 
 	/**
-	 * Setter for innodb_log_buffer_size
+	 * Sets the innodbBufferPoolInstances
 	 *
-	 * @param int $innodbLogBufferSize
+	 * @param int $innodbBufferPoolInstances
 	 * @return void
 	 */
-	public function setInnodbLogBufferSize($innodbLogBufferSize) {
-		$this->innodbLogBufferSize = $innodbLogBufferSize;
+	public function setInnodbBufferPoolInstances($innodbBufferPoolInstances) {
+		$this->innodbBufferPoolInstances = $innodbBufferPoolInstances;
+	}
+
+	/**
+	 * Returns the innodbBufferPoolSize
+	 *
+	 * @return int $innodbBufferPoolSize
+	 */
+	public function getInnodbBufferPoolSize() {
+		return $this->innodbBufferPoolSize;
+	}
+
+	/**
+	 * Sets the innodbBufferPoolSize
+	 *
+	 * @param int $innodbBufferPoolSize
+	 * @return void
+	 */
+	public function setInnodbBufferPoolSize($innodbBufferPoolSize) {
+		$this->innodbBufferPoolSize = $innodbBufferPoolSize;
 	}
 
 	/**
@@ -231,22 +271,60 @@ class Variables {
 	}
 
 	/**
-	 * Returns the innodbBufferPoolSize
+	 * Getter for innodb_log_buffer_size
 	 *
-	 * @return int $innodbBufferPoolSize
+	 * @return int
 	 */
-	public function getInnodbBufferPoolSize() {
-		return $this->innodbBufferPoolSize;
+	public function getInnodbLogBufferSize() {
+		return $this->innodbLogBufferSize;
 	}
 
 	/**
-	 * Sets the innodbBufferPoolSize
+	 * Setter for innodb_log_buffer_size
 	 *
-	 * @param int $innodbBufferPoolSize
+	 * @param int $innodbLogBufferSize
 	 * @return void
 	 */
-	public function setInnodbBufferPoolSize($innodbBufferPoolSize) {
-		$this->innodbBufferPoolSize = $innodbBufferPoolSize;
+	public function setInnodbLogBufferSize($innodbLogBufferSize) {
+		$this->innodbLogBufferSize = $innodbLogBufferSize;
+	}
+
+	/**
+	 * Returns the innodbLogFileSize
+	 *
+	 * @return int $innodbLogFileSize
+	 */
+	public function getInnodbLogFileSize() {
+		return $this->innodbLogFileSize;
+	}
+
+	/**
+	 * Sets the innodbLogFileSize
+	 *
+	 * @param int $innodbLogFileSize
+	 * @return void
+	 */
+	public function setInnodbLogFileSize($innodbLogFileSize) {
+		$this->innodbLogFileSize = $innodbLogFileSize;
+	}
+
+	/**
+	 * Returns the innodbLogFilesInGroup
+	 *
+	 * @return int $innodbLogFilesInGroup
+	 */
+	public function getInnodbLogFilesInGroup() {
+		return $this->innodbLogFilesInGroup;
+	}
+
+	/**
+	 * Sets the innodbLogFilesInGroup
+	 *
+	 * @param int $innodbLogFilesInGroup
+	 * @return void
+	 */
+	public function setInnodbLogFilesInGroup($innodbLogFilesInGroup) {
+		$this->innodbLogFilesInGroup = $innodbLogFilesInGroup;
 	}
 
 	/**
