@@ -24,6 +24,9 @@ namespace StefanFroemken\Sfmysqlreport\ViewHelpers;
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use StefanFroemken\Sfmysqlreport\Domain\Model\Status;
+use StefanFroemken\Sfmysqlreport\Domain\Model\Variables;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -35,16 +38,20 @@ class InnoDbBufferViewHelper extends AbstractViewHelper {
 	/**
 	 * analyze QueryCache parameters
 	 *
-	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
-	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Variables $variables
+	 * @param Status $status
+	 * @param Variables $variables
 	 * @return string
 	 */
-	public function render(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status, \StefanFroemken\Sfmysqlreport\Domain\Model\Variables $variables) {
+	public function render(Status $status, Variables $variables) {
 		$this->templateVariableContainer->add('hitRatio', $this->getHitRatio($status));
+		$this->templateVariableContainer->add('hitRatioBySF', $this->getHitRatioBySF($status));
 		$this->templateVariableContainer->add('writeRatio', $this->getWriteRatio($status));
+		$this->templateVariableContainer->add('load', $this->getLoad($status));
 		$content = $this->renderChildren();
 		$this->templateVariableContainer->remove('hitRatio');
+		$this->templateVariableContainer->remove('hitRatioBySF');
 		$this->templateVariableContainer->remove('writeRatio');
+		$this->templateVariableContainer->remove('load');
 		return $content;
 	}
 
@@ -52,10 +59,10 @@ class InnoDbBufferViewHelper extends AbstractViewHelper {
 	 * get hit ratio of innoDb Buffer
 	 * A ratio of 99.9 equals 1/1000
 	 *
-	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
+	 * @param Status $status
 	 * @return array
 	 */
-	protected function getHitRatio(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status) {
+	protected function getHitRatio(Status $status) {
 		$result = array();
 		$hitRatio = ($status->getInnodbBufferPoolReadRequests() / ($status->getInnodbBufferPoolReadRequests() + $status->getInnodbBufferPoolReads())) * 100;
 		if ($hitRatio <= 90) {
@@ -70,13 +77,36 @@ class InnoDbBufferViewHelper extends AbstractViewHelper {
 	}
 
 	/**
+	 * get hit ratio of innoDb Buffer by SF
+	 *
+	 * @param Status $status
+	 * @return array
+	 */
+	protected function getHitRatioBySF(Status $status) {
+		$result = array();
+
+		// we always want a factor of 1/1000.
+		$niceToHave = $status->getInnodbBufferPoolReads() * 1000;
+		$hitRatio = 100 / $niceToHave * $status->getInnodbBufferPoolReadRequests();
+		if ($hitRatio <= 70) {
+			$result['status'] = 'danger';
+		} elseif ($hitRatio <= 90) {
+			$result['status'] = 'warning';
+		} else {
+			$result['status'] = 'success';
+		}
+		$result['value'] = round($hitRatio, 2);
+		return $result;
+	}
+
+	/**
 	 * get write ratio of innoDb Buffer
 	 * A value more higher than 1 is good
 	 *
-	 * @param \StefanFroemken\Sfmysqlreport\Domain\Model\Status $status
+	 * @param Status $status
 	 * @return array
 	 */
-	protected function getWriteRatio(\StefanFroemken\Sfmysqlreport\Domain\Model\Status $status) {
+	protected function getWriteRatio(Status $status) {
 		$result = array();
 		$writeRatio = $status->getInnodbBufferPoolWriteRequests() / $status->getInnodbBufferPoolPagesFlushed();
 		if ($writeRatio <= 2) {
@@ -88,6 +118,35 @@ class InnoDbBufferViewHelper extends AbstractViewHelper {
 		}
 		$result['value'] = round($writeRatio, 2);
 		return $result;
+	}
+
+	/**
+	 * get load of InnoDB Buffer
+	 *
+	 * @param Status $status
+	 * @return array
+	 */
+	protected function getLoad(Status $status) {
+		$load = array();
+
+		// in Bytes
+		$total = $status->getInnodbBufferPoolPagesTotal() * $status->getInnodbPageSize();
+		$data = $status->getInnodbBufferPoolPagesData() * $status->getInnodbPageSize();
+		$misc = $status->getInnodbBufferPoolPagesMisc() * $status->getInnodbPageSize();
+		$free = $status->getInnodbBufferPoolPagesFree() * $status->getInnodbPageSize();
+
+		// in MB
+		$load['total'] = GeneralUtility::formatSize($total);
+		$load['data'] = GeneralUtility::formatSize($data);
+		$load['misc'] = GeneralUtility::formatSize($misc);
+		$load['free'] = GeneralUtility::formatSize($free);
+
+		// in percent
+		$load['dataPercent'] = round(100 / $total * $data, 1);
+		$load['miscPercent'] = round(100 / $total * $misc, 1);
+		$load['freePercent'] = round(100 / $total * $free, 1);
+
+		return $load;
 	}
 
 }

@@ -72,11 +72,39 @@ class Status {
 	protected $createdTmpTables = 0;
 
 	/**
+	 * Innodb_buffer_pool_pages_data
+	 *
+	 * @var int
+	 */
+	protected $innodbBufferPoolPagesData = 0;
+
+	/**
 	 * Innodb_buffer_pool_pages_flushed
 	 *
 	 * @var int
 	 */
 	protected $innodbBufferPoolPagesFlushed = 0;
+
+	/**
+	 * Innodb_buffer_pool_pages_free
+	 *
+	 * @var int
+	 */
+	protected $innodbBufferPoolPagesFree = 0;
+
+	/**
+	 * Innodb_buffer_pool_pages_misc
+	 *
+	 * @var int
+	 */
+	protected $innodbBufferPoolPagesMisc = 0;
+
+	/**
+	 * Innodb_buffer_pool_pages_total
+	 *
+	 * @var int
+	 */
+	protected $innodbBufferPoolPagesTotal = 0;
 
 	/**
 	 * Innodb_buffer_pool_read_requests
@@ -98,6 +126,13 @@ class Status {
 	 * @var int
 	 */
 	protected $innodbBufferPoolWriteRequests = 0;
+
+	/**
+	 * Innodb_page_size
+	 *
+	 * @var int
+	 */
+	protected $innodbPageSize = 0;
 
 	/**
 	 * Key_blocks_unused
@@ -358,6 +393,25 @@ class Status {
 	}
 
 	/**
+	 * Returns the innodbBufferPoolPagesData
+	 *
+	 * @return int $innodbBufferPoolPagesData
+	 */
+	public function getInnodbBufferPoolPagesData() {
+		return $this->innodbBufferPoolPagesData;
+	}
+
+	/**
+	 * Sets the innodbBufferPoolPagesData
+	 *
+	 * @param int $innodbBufferPoolPagesData
+	 * @return void
+	 */
+	public function setInnodbBufferPoolPagesData($innodbBufferPoolPagesData) {
+		$this->innodbBufferPoolPagesData = $innodbBufferPoolPagesData;
+	}
+
+	/**
 	 * Returns the innodbBufferPoolPagesFlushed
 	 *
 	 * @return int $innodbBufferPoolPagesFlushed
@@ -374,6 +428,63 @@ class Status {
 	 */
 	public function setInnodbBufferPoolPagesFlushed($innodbBufferPoolPagesFlushed) {
 		$this->innodbBufferPoolPagesFlushed = $innodbBufferPoolPagesFlushed;
+	}
+
+	/**
+	 * Returns the innodbBufferPoolPagesFree
+	 *
+	 * @return int $innodbBufferPoolPagesFree
+	 */
+	public function getInnodbBufferPoolPagesFree() {
+		return $this->innodbBufferPoolPagesFree;
+	}
+
+	/**
+	 * Sets the innodbBufferPoolPagesFree
+	 *
+	 * @param int $innodbBufferPoolPagesFree
+	 * @return void
+	 */
+	public function setInnodbBufferPoolPagesFree($innodbBufferPoolPagesFree) {
+		$this->innodbBufferPoolPagesFree = $innodbBufferPoolPagesFree;
+	}
+
+	/**
+	 * Returns the innodbBufferPoolPagesMisc
+	 *
+	 * @return int $innodbBufferPoolPagesMisc
+	 */
+	public function getInnodbBufferPoolPagesMisc() {
+		return $this->innodbBufferPoolPagesMisc;
+	}
+
+	/**
+	 * Sets the innodbBufferPoolPagesMisc
+	 *
+	 * @param int $innodbBufferPoolPagesMisc
+	 * @return void
+	 */
+	public function setInnodbBufferPoolPagesMisc($innodbBufferPoolPagesMisc) {
+		$this->innodbBufferPoolPagesMisc = $innodbBufferPoolPagesMisc;
+	}
+
+	/**
+	 * Returns the innodbBufferPoolPagesTotal
+	 *
+	 * @return int $innodbBufferPoolPagesTotal
+	 */
+	public function getInnodbBufferPoolPagesTotal() {
+		return $this->innodbBufferPoolPagesTotal;
+	}
+
+	/**
+	 * Sets the innodbBufferPoolPagesTotal
+	 *
+	 * @param int $innodbBufferPoolPagesTotal
+	 * @return void
+	 */
+	public function setInnodbBufferPoolPagesTotal($innodbBufferPoolPagesTotal) {
+		$this->innodbBufferPoolPagesTotal = $innodbBufferPoolPagesTotal;
 	}
 
 	/**
@@ -431,6 +542,25 @@ class Status {
 	 */
 	public function setInnodbBufferPoolWriteRequests($innodbBufferPoolWriteRequests) {
 		$this->innodbBufferPoolWriteRequests = $innodbBufferPoolWriteRequests;
+	}
+
+	/**
+	 * Returns the innodbPageSize
+	 *
+	 * @return int $innodbPageSize
+	 */
+	public function getInnodbPageSize() {
+		return $this->innodbPageSize;
+	}
+
+	/**
+	 * Sets the innodbPageSize
+	 *
+	 * @param int $innodbPageSize
+	 * @return void
+	 */
+	public function setInnodbPageSize($innodbPageSize) {
+		$this->innodbPageSize = $innodbPageSize;
 	}
 
 	/**

@@ -1,6 +1,28 @@
 {namespace sf=StefanFroemken\Sfmysqlreport\ViewHelpers}
 
 <sf:innoDbBuffer status="{status}" variables="{variables}">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">InnoDB Buffer Load</h3>
+		</div>
+		<div class="panel-body">
+			<p>Following progressbar shows you how pages (a block with {status.innodbPageSize} Bytes) are currently balanced in InnoDB Buffer</p>
+			<p>If free InnoDB Buffer is below 15-20% it may indicate that you have to increase your innodb_buffer_pool_size</p>
+			<p>If free InnoDB Buffer is higher than 20-30% it may indicate that you should reduce innodb_buffer_pool_size</p>
+			<div class="progress">
+				<div class="progress-bar progress-bar-success" style="width: {load.dataPercent}%"></div>
+				<div class="progress-bar progress-bar-warning progress-bar-striped" style="width: {load.miscPercent}%"></div>
+				<div class="progress-bar progress-bar-info" style="width: {load.freePercent}%"></div>
+			</div>
+			<ul class="list-group">
+				<li class="list-group-item">Total: {load.total}</li>
+				<li class="list-group-item list-group-item-success">Data: {load.data} ({load.dataPercent}%)</li>
+				<li class="list-group-item list-group-item-warning">Misc: {load.misc} ({load.miscPercent}%)</li>
+				<li class="list-group-item list-group-item-info">Free: {load.free} ({load.freePercent}%)</li>
+			</ul>
+		</div>
+	</div>
+
 	<div class="panel panel-{hitRatio.status}">
 		<div class="panel-heading">
 			<h3 class="panel-title">Hit Ratio</h3>
@@ -14,6 +36,21 @@
 			</f:if>
 		</div>
 	</div>
+
+	<div class="panel panel-{hitRatioBySF.status}">
+		<div class="panel-heading">
+			<h3 class="panel-title">Hit Ratio by SF</h3>
+		</div>
+		<div class="panel-body">
+			<p>IMO we should have a factor of 1/1000 of speed between reading from HDD and reading from RAM.</p>
+			<p>So, the amount of reading from HDD * 1000 would be our nice-to-have value for reading from RAM.</p>
+			<p>100 / value of nice-to-have * innodb_buffer_pool_read_requests shows us a percentage value how far we are away from factor 1/1000.</p>
+			<div class="progress">
+				<div class="progress-bar progress-bar-{hitRatioBySF.status}" style="width: {hitRatioBySF.value}%"></div>
+			</div>
+		</div>
+	</div>
+
 	<div class="panel panel-{writeRatio.status}">
 		<div class="panel-heading">
 			<h3 class="panel-title">Write Ratio</h3>
