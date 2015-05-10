@@ -20,6 +20,17 @@
 			<p>If you have just started your MySQL-Server or have less SELECT-Statement this value can be red or yellow. So please wait till all caches are warmed up.</p>
 		</div>
 	</div>
+	<f:if condition="{variables.queryCacheSize}>268435456">
+		<div class="panel panel-error">
+			<div class="panel-heading">
+				<h3 class="panel-title">Query Cache too high</h3>
+			</div>
+			<div class="panel-body">
+				<p>The query cache is configured too high. Because of concurrency it may take too long to delete queries
+					from Query Cache. Try to keep query cache below 256MB</p>
+			</div>
+		</div>
+	</f:if>
 	<div class="panel panel-{pruneRatio.status}">
 		<div class="panel-heading">
 			<h3 class="panel-title">Prune Ratio</h3>
