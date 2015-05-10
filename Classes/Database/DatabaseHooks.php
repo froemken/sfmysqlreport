@@ -109,7 +109,11 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 	 */
 	public function exec_SELECTquery_postProcessAction(&$select_fields, &$from_table, &$where_clause, &$groupBy, &$orderBy, &$limit, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject) {
 		// don't log profiles of this extension
-		if (strpos($from_table, 'tx_sfmysqlreport_domain_model_profile') === FALSE) {
+		// be login does not work, if my extension was installed. So I added a check against BE_USER
+		if (
+			strpos($from_table, 'tx_sfmysqlreport_domain_model_profile') === FALSE &&
+			((TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->user !== NULL) || TYPO3_MODE === 'FE')
+		) {
 			$row = array();
 			// Save kind of query
 			$row['query_type'] = 'SELECT';
@@ -137,7 +141,11 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 	 */
 	public function exec_INSERTquery_postProcessAction(&$table, array &$fieldsValues, &$noQuoteFields, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject) {
 		// don't log profiles of this extension
-		if (strpos($table, 'tx_sfmysqlreport_domain_model_profile') === FALSE) {
+		// be login does not work, if my extension was installed. So I added a check against BE_USER
+		if (
+			strpos($table, 'tx_sfmysqlreport_domain_model_profile') === FALSE &&
+			((TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->user !== NULL) || TYPO3_MODE === 'FE')
+		) {
 			$row = array();
 			// Save kind of query
 			$row['query_type'] = 'INSERT';
@@ -165,7 +173,11 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 	 */
 	public function exec_INSERTmultipleRows_postProcessAction(&$table, array &$fields, array &$rows, &$noQuoteFields, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject) {
 		// don't log profiles of this extension
-		if (strpos($table, 'tx_sfmysqlreport_domain_model_profile') === FALSE) {
+		// be login does not work, if my extension was installed. So I added a check against BE_USER
+		if (
+			strpos($table, 'tx_sfmysqlreport_domain_model_profile') === FALSE &&
+			((TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->user !== NULL) || TYPO3_MODE === 'FE')
+		) {
 			$row = array();
 			// Save kind of query
 			$row['query_type'] = 'INSERT';
@@ -193,7 +205,11 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 	 */
 	public function exec_UPDATEquery_postProcessAction(&$table, &$where, array &$fieldsValues, &$noQuoteFields, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject) {
 		// don't log profiles of this extension
-		if (strpos($table, 'tx_sfmysqlreport_domain_model_profile') === FALSE) {
+		// be login does not work, if my extension was installed. So I added a check against BE_USER
+		if (
+			strpos($table, 'tx_sfmysqlreport_domain_model_profile') === FALSE &&
+			((TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->user !== NULL) || TYPO3_MODE === 'FE')
+		) {
 			$row = array();
 			// Save kind of query
 			$row['query_type'] = 'UPDATE';
@@ -219,7 +235,11 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 	 */
 	public function exec_DELETEquery_postProcessAction(&$table, &$where, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject) {
 		// don't log profiles of this extension
-		if (strpos($table, 'tx_sfmysqlreport_domain_model_profile') === FALSE) {
+		// be login does not work, if my extension was installed. So I added a check against BE_USER
+		if (
+			strpos($table, 'tx_sfmysqlreport_domain_model_profile') === FALSE &&
+			((TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->user !== NULL) || TYPO3_MODE === 'FE')
+		) {
 			$row = array();
 			// Save kind of query
 			$row['query_type'] = 'DELETE';
@@ -244,7 +264,11 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 	 */
 	public function exec_TRUNCATEquery_postProcessAction(&$table, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject) {
 		// don't log profiles of this extension
-		if (strpos($table, 'tx_sfmysqlreport_domain_model_profile') === FALSE) {
+		// be login does not work, if my extension was installed. So I added a check against BE_USER
+		if (
+			strpos($table, 'tx_sfmysqlreport_domain_model_profile') === FALSE &&
+			((TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->user !== NULL) || TYPO3_MODE === 'FE')
+		) {
 			$row = array();
 			// Save kind of query
 			$row['query_type'] = 'TRUNCATE';
