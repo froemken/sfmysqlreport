@@ -6,6 +6,7 @@
 		<thead>
 			<tr>
 				<th>Query type</th>
+				<th>Amount of queries</th>
 				<th>Summed Duration</th>
 			</tr>
 		</thead>
@@ -13,6 +14,7 @@
 			<f:for each="{profileTypes}" as="profile">
 				<tr>
 					<td>{profile.query_type}</td>
+					<td>{profile.amount}</td>
 					<td><f:link.action action="queryType" controller="Profile" arguments="{uniqueIdentifier: profile.unique_call_identifier, queryType: profile.query_type}">{profile.duration}</f:link.action></td>
 				</tr>
 			</f:for>

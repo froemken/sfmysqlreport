@@ -8,6 +8,7 @@
 					<tr>
 						<th>Execution time</th>
 						<th>Mode</th>
+						<th>Amount of queries in request</th>
 						<th>Summed Duration</th>
 					</tr>
 				</thead>
@@ -16,6 +17,7 @@
 						<tr>
 							<td>{profile.crdate -> f:format.date(format: 'd.m.Y H:i:s')}</td>
 							<td>{profile.mode}</td>
+							<td>{profile.amount}</td>
 							<td><f:link.action action="show" controller="Profile" arguments="{uniqueIdentifier: profile.unique_call_identifier}">{profile.duration}</f:link.action></td>
 						</tr>
 					</f:for>

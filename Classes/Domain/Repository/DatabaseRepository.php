@@ -37,7 +37,7 @@ class DatabaseRepository extends AbstractRepository {
 	 */
 	public function findProfilingsForCall() {
 		return $this->databaseConnection->exec_SELECTgetRows(
-			'crdate, unique_call_identifier, mode, SUM(duration) as duration',
+			'crdate, unique_call_identifier, mode, SUM(duration) as duration, COUNT(*) as amount',
 			'tx_sfmysqlreport_domain_model_profile',
 			'',
 			'unique_call_identifier', 'crdate DESC', 100
@@ -52,7 +52,7 @@ class DatabaseRepository extends AbstractRepository {
 	 */
 	public function getProfilingByUniqueIdentifier($uniqueIdentifier) {
 		return $this->databaseConnection->exec_SELECTgetRows(
-			'query_type, unique_call_identifier, SUM(duration) as duration',
+			'query_type, unique_call_identifier, SUM(duration) as duration, COUNT(*) as amount',
 			'tx_sfmysqlreport_domain_model_profile',
 			'unique_call_identifier = "' . $uniqueIdentifier . '"',
 			'query_type', 'duration DESC', ''
